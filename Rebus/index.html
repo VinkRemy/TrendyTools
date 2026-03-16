@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geavanceerde Rebus Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .mode-selector {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .mode-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .copy-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .copy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .output-container {
+            margin: 20px 0;
+        }
+
+        #output {
+            min-height: 100px;
+            padding: 20px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.3em;
+            line-height: 1.6;
+            word-break: break-word;
+            text-align: left;
+        }
+
+        .copy-status {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #48bb78;
+            min-height: 24px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #e53e3e;
+            padding: 10px;
+            background: #fed7d7;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .word-count {
+            text-align: right;
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Rebus Maker</h1>
+        <p class="subtitle">Maak van elke tekst een creatieve rebus</p>
+
+        <textarea id="input" rows="3" placeholder="Typ hier je tekst... (bijv. 'Ik hou van de maan')"></textarea>
+        <div class="word-count" id="wordCount">0 woorden</div>
+
+        <div class="mode-selector">
+            <label for="mode">Kies een rebus stijl:</label>
+            <select id="mode">
+                <option value="emoji">😊 Alleen Emoji</option>
+                <option value="wordplay">🎭 Woordspelingen</option>
+                <option value="all" selected>✨ Alles in één</option>
+            </select>
+        </div>
+        
+        <div class="button-group">
+            <button class="generate-btn" onclick="generateRebus()">Genereer Rebus</button>
+            <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()" disabled>Kopieer Rebus</button>
+        </div>
+
+        <div class="output-container">
+            <div id="output">👈 Typ een tekst en klik op "Genereer Rebus"</div>
+        </div>
+        <div id="copyStatus" class="copy-status"></div>
+    </div>
+
+    <script>
+        let wordMap = {};
+        let wordplayMap = {};
+
+        // Laad data van GitHub (raw content)
+        async function loadRebusData() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/jouw-username/jouw-repo/main/rebus-data.json');
+                if (!response.ok) {
+                    throw new Error('Kon data niet laden');
+                }
+                const data = await response.json();
+                wordMap = data.wordMap;
+                wordplayMap = data.wordplayMap;
+                console.log('Data geladen!', Object.keys(wordMap).length, 'woorden');
+            } catch (error) {
+                console.error('Fout bij laden:', error);
+                document.getElementById('output').innerHTML = 
+                    '<span class="error-message">❌ Kon rebus data niet laden. Gebruik fallback data.</span>';
+                // Fallback data voor als JSON niet laadt
+                wordMap = {
+                    "liefde": "❤️",
+                    "maan": "🌙",
+                    "ik": "👤",
+                    "jij": "👉",
+                    "is": "🟰",
+                    "cool": "😎"
+                };
+            }
+        }
+
+        // Laad data bij start
+        loadRebusData();
+
+        // Tel woorden in input
+        document.getElementById('input').addEventListener('input', function() {
+            const words = this.value.trim().split(/\s+/).filter(w => w.length > 0);
+            document.getElementById('wordCount').textContent = words.length + ' woorden';
+            
+            // Enable/disable copy button
+            document.getElementById('copyBtn').disabled = !this.value.trim();
+        });
+
+        function generateRebus() {
+            let inputText = document.getElementById("input").value.trim();
+            
+            if (!inputText) {
+                document.getElementById("output").innerHTML = 
+                    '<span class="error-message">⚠️ Voer eerst een tekst in!</span>';
+                return;
+            }
+
+            // Toon laadindicator
+            document.getElementById("output").innerHTML = '<div class="loading"></div> Bezig met genereren...';
+            
+            // Gebruik setTimeout om UI te laten updaten
+            setTimeout(() => {
+                let rebusText = inputText.toLowerCase();
+                let mode = document.getElementById("mode").value;
+
+                try {
+                    if (mode === "emoji") {
+                        rebusText = replaceWords(rebusText, wordMap);
+                    } else if (mode === "wordplay") {
+                        rebusText = replaceWordplay(rebusText, wordplayMap);
+                    } else if (mode === "all") {
+                        rebusText = replaceAll(rebusText, wordMap, wordplayMap);
+                    }
+
+                    document.getElementById("output").innerText = rebusText;
+                    document.getElementById("copyBtn").disabled = false;
+                } catch (error) {
+                    document.getElementById("output").innerHTML = 
+                        '<span class="error-message">❌ Er is een fout opgetreden</span>';
+                    console.error(error);
+                }
+            }, 100);
+        }
+
+        function replaceWords(text, map) {
+            let result = text;
+            Object.keys(map).forEach(word => {
+                let regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+                result = result.replace(regex, map[word]);
+            });
+            return result;
+        }
+
+        function replaceWordplay(text, map) {
+            let result = text;
+            Object.keys(map).forEach(word => {
+                let regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+                let trans = map[word];
+                result = result.replace(regex, `${trans.emoji} (${trans.from} -${trans.remove} +${trans.add})`);
+            });
+            return result;
+        }
+
+        function replaceAll(text, wordMap, wordplayMap) {
+            let result = text;
+            
+            // Eerst wordplay woorden (deze zijn specifieker)
+            Object.keys(wordplayMap).forEach(word => {
+                let regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+                let trans = wordplayMap[word];
+                // 50% kans op wordplay of emoji
+                if (Math.random() < 0.5) {
+                    result = result.replace(regex, `${trans.emoji} (${trans.from} -${trans.remove} +${trans.add})`);
+                } else if (wordMap[word]) {
+                    result = result.replace(regex, wordMap[word]);
+                }
+            });
+            
+            // Dan gewone emoji voor overgebleven woorden
+            Object.keys(wordMap).forEach(word => {
+                let regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+                // Alleen vervangen als het woord nog niet vervangen is
+                if (!result.match(regex)?.some(match => match.includes(wordMap[word]))) {
+                    result = result.replace(regex, wordMap[word]);
+                }
+            });
+            
+            return result;
+        }
+
+        // Escape speciale karakters voor regex
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        async function copyToClipboard() {
+            let outputText = document.getElementById("output").innerText;
+            if (outputText && !outputText.includes('⚠️') && !outputText.includes('❌')) {
+                try {
+                    await navigator.clipboard.writeText(outputText);
+                    let status = document.getElementById("copyStatus");
+                    status.innerText = "✅ Rebus gekopieerd naar klembord!";
+                    status.style.color = "#48bb78";
+                    
+                    // Voeg animatie toe
+                    document.getElementById("output").style.transform = "scale(1.02)";
+                    setTimeout(() => {
+                        document.getElementById("output").style.transform = "scale(1)";
+                    }, 200);
+                    
+                    setTimeout(() => status.innerText = "", 2000);
+                } catch (err) {
+                    document.getElementById("copyStatus").innerText = "❌ Kopiëren mislukt!";
+                    document.getElementById("copyStatus").style.color = "#e53e3e";
+                }
+            }
+        }
+
+        // Enter toets in textarea
+        document.getElementById("input").addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                generateRebus();
+            }
+        });
+
+        // Reset status bij nieuwe input
+        document.getElementById("input").addEventListener("input", function() {
+            document.getElementById("copyStatus").innerText = "";
+        });
+    </script>
+</body>
+</html>
