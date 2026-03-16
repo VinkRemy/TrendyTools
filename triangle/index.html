@@ -1,0 +1,379 @@
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Triangle Calculator</title>
+    <style>
+        body { 
+            text-align: center; 
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+            overflow: auto; /* Zorgt ervoor dat de pagina nog kan scrollen */
+        }
+
+        h1 {
+            color: #2a74d8;
+            margin-bottom: 20px;
+        }
+
+        .container { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative; 
+            margin: 30px 0; 
+        }
+
+        .triangle-container {
+            display: flex; 
+            justify-content: center; 
+            gap: 50px; /* Vergroot de ruimte tussen de driehoeken */
+            align-items: center;
+        }
+
+        svg { width: 200px; height: 200px; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2)); }
+
+        input, .result { 
+            width: 60px; 
+            text-align: center; 
+            position: absolute; 
+            background: rgba(255, 255, 255, 0.9); 
+            border: 1px solid #aaa; 
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        input {
+            font-size: 16px;
+        }
+
+        /* Posities van invoervelden rond de driehoek */
+        .hoekL { top: -10%; left: -5%; }
+        .hoekR { top: 95%; left: 85%; }
+        .zijdeL { top: 45%; left: -30%; }
+        .zijdeO { top: 95%; left: 35%; }
+        .schuineZ { top: 45%; left: 65%; }
+
+        /* Posities van uitkomsten rond de onderste driehoek */
+        .hoekLResult { top: -10%; left: -5%; }
+        .hoekRResult { top: 95%; left: 85%; }
+        .zijdeLResult { top: 45%; left: -30%; }
+        .zijdeOResult { top: 95%; left: 35%; }
+        .schuineZResult { top: 45%; left: 65%; }
+
+        /* Pijlstijl tussen de driehoeken */
+        .arrow {
+            font-size: 48px;
+            color: #2a74d8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(0deg); /* Draait de pijl naar rechts */
+            margin: 0 30px;
+            animation: arrowAnimation 1s ease-in-out infinite;
+        }
+
+        @keyframes arrowAnimation {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(10deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #2a74d8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1f58a0;
+        }
+
+        p {
+            font-size: 18px;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+@media (max-width: 600px) {
+            .triangle-container {
+                flex-direction: column; /* Zet de containers onder elkaar */
+                gap: 20px; /* Kleinere ruimte tussen de containers */
+            }
+
+            .arrow {
+                transform: rotate(90deg); /* Draai de pijl naar beneden */
+                margin: 20px 0; /* Pas de marges aan */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Triangle Calculator</h1>
+    <p>Enter known values ​​and click on "Calculate":</p>
+
+    <!-- Invoer Driehoek -->
+    <div class="triangle-container">
+        <div class="container">
+            <svg viewBox="0 0 100 100">
+                <polygon points="10,90 90,90 10,10" fill="none" stroke="black" stroke-width="2"/>
+            </svg>
+            <input type="number" id="F8" class="hoekL" placeholder="°">
+            <input type="number" id="J16" class="hoekR" placeholder="°">
+            <input type="number" id="F12" class="zijdeL" placeholder="L">
+            <input type="number" id="H16" class="zijdeO" placeholder="O">
+            <input type="number" id="J8" class="schuineZ" placeholder="S">
+        </div>
+
+        <!-- Pijl -->
+        <div class="arrow">→</div>
+
+        <div class="container">
+            <svg viewBox="0 0 100 100">
+                <polygon points="10,90 90,90 10,10" fill="none" stroke="blue" stroke-width="2"/>
+            </svg>
+            <div class="result hoekLResult" id="hoekLResult">?</div>
+            <div class="result hoekRResult" id="hoekRResult">?</div>
+            <div class="result zijdeLResult" id="zijdeLResult">?</div>
+            <div class="result zijdeOResult" id="zijdeOResult">?</div>
+            <div class="result schuineZResult" id="schuineZResult">?</div>
+        </div>
+    </div>
+
+    <button onclick="berekenDriehoek()" id="berekenDriehoek">Calculate</button>
+
+    <p><strong>State:</strong> <span id="status"></span></p>
+
+    <script>
+        // Blokkeer alleen inzoomen met Ctrl + Scroll
+        document.addEventListener('wheel', function(e) {
+            if (e.ctrlKey) {
+                e.preventDefault(); // Dit blokkeert inzoomen
+            }
+        }, { passive: false });
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // Voorkomt dat een formulier wordt verzonden (indien van toepassing)
+        document.getElementById("berekenDriehoek").click();
+    }
+});
+
+        function toRadians(degrees) { return degrees * (Math.PI / 180); }
+        function toDegrees(radians) { return radians * (180 / Math.PI); }
+
+        function calculateTriangle(F8, J16, F12, H16, J8) {
+            F8 = parseFloat(F8) || 0;
+            J16 = parseFloat(J16) || 0;
+            F12 = parseFloat(F12) || 0;
+            H16 = parseFloat(H16) || 0;
+            J8 = parseFloat(J8) || 0;
+
+            let hoekL = F8;
+            let hoekR = J16;
+            let zijdeL = F12;
+            let zijdeO = H16;
+            let schuineZ = J8;
+
+         
+            // Bereken ontbrekende waarden als de ingevoerde waarden geldig zijn
+            if (hoekL > 0 && zijdeL > 0) {
+                hoekR = 90 - hoekL;
+                zijdeO = zijdeL * Math.tan(toRadians(hoekL));
+                schuineZ = zijdeL / Math.cos(toRadians(hoekL));
+            } else if (hoekR > 0 && zijdeO > 0) {
+                hoekL = 90 - hoekR;
+                zijdeL = zijdeO * Math.tan(toRadians(hoekR));
+                schuineZ = zijdeO / Math.sin(toRadians(hoekR));
+            } else if (hoekL > 0 && schuineZ > 0) {
+                hoekR = 90 - hoekL;
+                zijdeL = schuineZ * Math.cos(toRadians(hoekL));
+                zijdeO = schuineZ * Math.sin(toRadians(hoekL));
+} else if (hoekL > 0 && zijdeO > 0) {
+                hoekR = 90 - hoekL;
+                zijdeL = zijdeO / Math.tan(toRadians(hoekL));
+                schuineZ = zijdeO / Math.sin(toRadians(hoekL));
+            } else if (hoekR > 0 && schuineZ > 0) {
+                hoekL = 90 - hoekR;
+                zijdeL = schuineZ * Math.sin(toRadians(hoekR));
+                zijdeO = schuineZ * Math.cos(toRadians(hoekR));
+
+
+ } else if (hoekR > 0 && zijdeL > 0) {
+                hoekL = 90 - hoekR;
+                schuineZ = zijdeL / Math.sin(toRadians(hoekR));
+                zijdeO = zijdeL / Math.tan(toRadians(hoekR));
+
+
+            } else if (zijdeL > 0 && zijdeO > 0 && schuineZ > 0) {
+                hoekL = toDegrees(Math.acos(zijdeL / schuineZ));
+                hoekR = toDegrees(Math.acos(zijdeO / schuineZ));
+            } else if (zijdeL > 0 && zijdeO > 0) {
+                schuineZ = Math.sqrt(zijdeL * zijdeL + zijdeO * zijdeO);
+                hoekL = toDegrees(Math.acos(zijdeL / schuineZ));
+                hoekR = toDegrees(Math.asin(zijdeL / schuineZ));
+} else if (schuineZ > 0 && zijdeO > 0) {
+                zijdeL = Math.sqrt(schuineZ * schuineZ - zijdeO * zijdeO);
+                hoekL = toDegrees(Math.acos(zijdeL / schuineZ));
+                hoekR = toDegrees(Math.asin(zijdeL / schuineZ));
+} else if (schuineZ > 0 && zijdeL > 0) {
+                zijdeO = Math.sqrt(schuineZ * schuineZ - zijdeL * zijdeL);
+                hoekL = toDegrees(Math.acos(zijdeL / schuineZ));
+                hoekR = toDegrees(Math.asin(zijdeL / schuineZ));
+}
+   // Controleer of de ingevoerde waarden geldig zijn voor een rechthoekige driehoek
+            let isGeldig = true;
+
+            // Controleer of de hoeken optellen tot 90 graden
+            if (hoekL > 0 && hoekR > 0 && Math.abs(hoekL + hoekR - 90) > 0.01) {
+                isGeldig = false;
+            }
+
+            // Controleer of de stelling van Pythagoras klopt
+            if (zijdeL > 0 && zijdeO > 0 && schuineZ > 0) {
+                let pythagoras = Math.abs(schuineZ * schuineZ - (zijdeL * zijdeL + zijdeO * zijdeO));
+                if (pythagoras > 0.01) {
+                    isGeldig = false;
+                }
+            }
+
+            // Als de waarden niet geldig zijn, geef een error
+
+            if (!isGeldig) {
+                return { hoekL, hoekR, zijdeL, zijdeO, schuineZ, status: "Error" };
+            }
+
+            // Controleer of de berekende schuineZ overeenkomt met de ingevulde waarde
+            if (J8 > 0 && Math.abs(schuineZ - J8) > 0.01) {
+                return { hoekL, hoekR, zijdeL, zijdeO, schuineZ, status: "Errors" };
+            }
+
+            // Controleer nogmaals of de driehoek geldig is na berekeningen
+            if (Math.abs(hoekL + hoekR - 90) > 0.01 || Math.abs(schuineZ * schuineZ - (zijdeL * zijdeL + zijdeO * zijdeO)) > 0.01)
+
+ {
+                return { hoekL, hoekR, zijdeL, zijdeO, schuineZ, status: "Error" };
+            }
+            return { hoekL, hoekR, zijdeL, zijdeO, schuineZ, status: "Valid" };
+        }
+
+        function berekenDriehoek() {
+            let F8 = document.getElementById("F8");
+            let J16 = document.getElementById("J16");
+            let F12 = document.getElementById("F12");
+            let H16 = document.getElementById("H16");
+            let J8 = document.getElementById("J8");
+
+            let result = calculateTriangle(F8.value, J16.value, F12.value, H16.value, J8.value);
+
+            // Gebruik de ingevoerde waarden voor de resultaten
+            if (F8.value) result.hoekL = parseFloat(F8.value);
+            if (J16.value) result.hoekR = parseFloat(J16.value);
+            if (F12.value) result.zijdeL = parseFloat(F12.value);
+            if (H16.value) result.zijdeO = parseFloat(H16.value);
+            if (J8.value) result.schuineZ = parseFloat(J8.value);
+
+if (Math.abs(result.hoekL + result.hoekR - 90) > 0.01) {
+    result.status = "Error: Corners don't add up to 90";
+result.hoekL ="?";
+result.hoekR ="?";
+result.zijdeL ="?";
+result.zijdeo ="?";
+result.schuineZ ="?";
+}
+
+if (F8.value > 90 || J16.value > 90) {
+    result.status = "Error: Corners don't add up to 90";
+result.hoekL ="?";
+result.hoekR ="?";
+result.zijdeL ="?";
+result.zijdeo ="?";
+result.schuineZ ="?";
+}
+
+if (Math.abs(result.schuineZ * result.schuineZ - (result.zijdeL * result.zijdeL + result.zijdeO * result.zijdeO)) > 0.01 || result.schuineZ < result.zijdeL || result.schuineZ < result.zijdeO) {
+    result.status = "Error: Incorrect side ratio";
+result.hoekL ="?";
+result.hoekR ="?";
+result.zijdeL ="?";
+result.zijdeo ="?";
+result.schuineZ ="?";
+}
+const ingevuld = [F8.value, J16.value, F12.value, H16.value, J8.value].filter((v) => v > 0).length;
+if (ingevuld < 2) {
+    result.status = "Error: Define at least two components";
+result.hoekL ="?";
+result.hoekR ="?";
+result.zijdeL ="?";
+result.zijdeo ="?";
+result.schuineZ ="?";
+}
+if ((F12.value === undefined || F12.value <= 0) &&
+        (H16.value === undefined || H16.value <= 0) &&
+        (J8.value === undefined || J8.value <= 0)) {
+        result.status = "Error: Define at least one side";
+result.hoekL ="?";
+result.hoekR ="?";
+result.zijdeL ="?";
+result.zijdeo ="?";
+result.schuineZ ="?"; };
+
+if (F8.value < 0 || J16.value < 0 || F12.value < 0 || H16.value < 0 || J8.value < 0) {
+    result.status = "Error: You can't have negative values";
+}
+
+if (result.status.includes("Error")) {
+document.getElementById("F8").style.backgroundColor = "";
+
+document.getElementById("J16").style.backgroundColor = "";    
+            document.getElementById("F12").style.backgroundColor = "";
+                document.getElementById("H16").style.backgroundColor = "";
+                document.getElementById("J8").style.backgroundColor = "";
+         if (F8.value !== "") F8.style.backgroundColor = "#FFCCCC";  // Rood als ingevuld
+    if (J16.value !== "") J16.style.backgroundColor = "#FFCCCC";
+    if (F12.value !== "") F12.style.backgroundColor = "#FFCCCC";
+    if (H16.value !== "") H16.style.backgroundColor = "#FFCCCC";
+    if (J8.value !== "") J8.style.backgroundColor = "#FFCCCC";
+
+result.hoekL ="?";
+result.hoekR ="?";
+result.zijdeL ="?";
+result.zijdeo ="?";
+result.schuineZ ="?";
+document.getElementById("zijdeLResult").innerText = result.hoekL;
+document.getElementById("zijdeLResult").innerText = result.hoekR;
+document.getElementById("zijdeLResult").innerText = result.zijdeL;
+document.getElementById("zijdeLResult").innerText = result.zijdeO;
+document.getElementById("zijdeLResult").innerText = result.schuineZ;
+document.getElementById("status").innerText = result.status;
+} else {
+                // Zet de achtergrondkleur terug naar de standaardkleur als er geen error is
+document.getElementById("F8").style.backgroundColor = "";
+
+document.getElementById("J16").style.backgroundColor = "";    
+            document.getElementById("F12").style.backgroundColor = "";
+                document.getElementById("H16").style.backgroundColor = "";
+                document.getElementById("J8").style.backgroundColor = "";
+}
+
+            // Toon de resultaten
+            document.getElementById("hoekLResult").innerText = result.hoekL.toFixed(2) + "°";
+            document.getElementById("hoekRResult").innerText = result.hoekR.toFixed(2) + "°";
+            document.getElementById("zijdeLResult").innerText = result.zijdeL.toFixed(2);
+            document.getElementById("zijdeOResult").innerText = result.zijdeO.toFixed(2);
+            document.getElementById("schuineZResult").innerText = result.schuineZ.toFixed(2);
+            document.getElementById("status").innerText = result.status;
+        }
+    </script>
+</body>
+</html>
