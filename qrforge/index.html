@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR forge · stylish generator</title>
+    <!-- Google Font & Font Awesome for clean icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- QRCode.js library (same CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #f9fafc 0%, #eef0f3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 1.5rem;
+            transition: background 0.2s ease, color 0.2s;
+        }
+
+        /* main card */
+        .card {
+            max-width: 680px;
+            width: 100%;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 2.5rem;
+            padding: 2.5rem 2rem 2.8rem;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: box-shadow 0.3s;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 2.2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(130deg, #1A2A3A, #2C3E50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        h1 i {
+            background: none;
+            -webkit-text-fill-color: #2c3e50;
+            font-size: 2rem;
+        }
+
+        .sub {
+            font-size: 0.98rem;
+            color: #4a5a6e;
+            margin-bottom: 2.4rem;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .sub i {
+            opacity: 0.7;
+        }
+
+        /* input group */
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 2.2rem;
+        }
+        .input-wrapper {
+            flex: 3 1 280px;
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6f7e93;
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+        #linkInput {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            background: #ffffffd9;
+            border-radius: 48px;
+            font-size: 1rem;
+            font-weight: 500;
+            outline: none;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            color: #1e293b;
+        }
+        #linkInput:focus {
+            border-color: #7c8fa3;
+            box-shadow: 0 8px 18px rgba(44, 62, 80, 0.12);
+            background: #ffffff;
+        }
+        #linkInput::placeholder {
+            color: #9aa9b9;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .generate-btn {
+            flex: 1 0 auto;
+            background: #1e2b39;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 48px;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: 0.2s;
+            box-shadow: 0 10px 18px -8px #1e2b3970;
+            border: 1px solid #ffffff30;
+        }
+        .generate-btn:hover {
+            background: #2b3f51;
+            transform: scale(1.02);
+            box-shadow: 0 16px 22px -8px #1e2b39b0;
+        }
+        .generate-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* QR code container — perfect center */
+        .qr-stage {
+            background: #ffffffc7;
+            border-radius: 2rem;
+            padding: 2rem;
+            margin: 2rem 0 1.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 6px #00000008, 0 12px 28px -10px #2c3e5030;
+            border: 1px solid #ffffff;
+            backdrop-filter: blur(4px);
+            min-height: 270px;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        #qrcode img, #qrcode canvas {
+            border-radius: 20px;
+            box-shadow: 0 12px 28px -8px rgba(0,0,0,0.25);
+            background: white;
+            padding: 0.5rem;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* meta info + download button */
+        .info-hint {
+            background: #eef3f8;
+            border-radius: 2rem;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0 2rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            border: 1px solid #dbe4ed;
+        }
+        .hint-text {
+            flex: 2;
+            min-width: 200px;
+            color: #2d3f4f;
+        }
+        .hint-text i {
+            color: #4f6f8f;
+            width: 1.8rem;
+            font-size: 1.2rem;
+        }
+        .hint-text span {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .hint-text small {
+            display: block;
+            margin-top: 0.3rem;
+            color: #4d6277;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .download-btn {
+            background: white;
+            border: 2px solid #cbdae9;
+            border-radius: 40px;
+            padding: 0.9rem 2rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: #1e2b39;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 4px 8px #0000000a;
+            font-size: 1rem;
+        }
+        .download-btn:hover {
+            background: #e5edf5;
+            border-color: #9bb0c9;
+        }
+        .download-btn i {
+            color: #2c3e50;
+        }
+        #downloadBtn {
+            display: none;  /* hidden until QR generated */
+        }
+
+        /* theme toggle small */
+        .theme-toggle {
+            background: #e2eaf2;
+            border-radius: 100px;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            margin-top: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #253544;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid #c8d6e5;
+            transition: 0.2s;
+        }
+        .theme-toggle i {
+            font-size: 1rem;
+        }
+        .theme-toggle:hover {
+            background: #d0deed;
+        }
+
+        /* dark mode variables */
+        body.dark {
+            background: linear-gradient(145deg, #1c262f, #131b22);
+        }
+        body.dark .card {
+            background: rgba(28, 38, 47, 0.8);
+            backdrop-filter: blur(10px);
+            border-color: #3a4655;
+        }
+        body.dark h1 {
+            background: linear-gradient(130deg, #c0d2e6, #e2eaf5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.dark .sub {
+            color: #b0c2d6;
+            border-bottom-color: #3e5062;
+        }
+        body.dark #linkInput {
+            background: #26323f;
+            border-color: #405466;
+            color: #edf2f9;
+        }
+        body.dark #linkInput:focus {
+            border-color: #7f99b6;
+        }
+        body.dark .generate-btn {
+            background: #314d63;
+            box-shadow: 0 12px 18px -6px #060b0e;
+        }
+        body.dark .qr-stage {
+            background: #1e2d3bcc;
+            border-color: #405161;
+        }
+        body.dark .info-hint {
+            background: #263542;
+            border-color: #42576b;
+        }
+        body.dark .hint-text, body.dark .hint-text small {
+            color: #cedff2;
+        }
+        body.dark .download-btn {
+            background: #1d2b37;
+            border-color: #56738f;
+            color: #eaf0f8;
+        }
+        body.dark .theme-toggle {
+            background: #253644;
+            border-color: #506f8b;
+            color: #d2e3f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>
+            <i class="fas fa-qrcode"></i> QR forge 
+        </h1>
+        <div class="sub">
+            <i class="fas fa-link"></i>    text · link · image URL 
+            <i class="fas fa-arrow-right" style="opacity:0.4; margin-left:6px;"></i>
+        </div>
+
+        <!-- input area -->
+        <div class="input-group">
+            <div class="input-wrapper">
+                <i class="fas fa-pencil-alt"></i>
+                <input type="text" id="linkInput" placeholder="e.g. https://myimage.com/photo.png or any text">
+            </div>
+            <button class="generate-btn" onclick="generateQR()">
+                <i class="fas fa-bolt"></i> Generate
+            </button>
+        </div>
+
+        <!-- QR code display - centered inside stage -->
+        <div class="qr-stage">
+            <div id="qrcode"></div>
+        </div>
+
+        <!-- Info panel: image URL hint + download button -->
+        <div class="info-hint">
+            <div class="hint-text">
+                <i class="fas fa-image"></i>
+                <span>📸 Image URL?</span>
+                <small>Paste a direct link to a picture (.jpg, .png, etc.) – the QR will open it. Works for any text too.</small>
+            </div>
+            <button id="downloadBtn" class="download-btn" onclick="downloadQR()">
+                <i class="fas fa-download"></i> Download PNG
+            </button>
+        </div>
+
+        <!-- subtle theme toggle (cosmetic, but fun) -->
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i> <span>dark/light</span> <i class="fas fa-sun"></i>
+        </button>
+    </div>
+
+    <script>
+        let qr;
+        let currentLink = '';   // store last used text
+
+        function generateQR() {
+            const link = document.getElementById("linkInput").value.trim();
+            if (!link) {
+                alert("✱ Please enter a link, text or image URL");
+                return;
+            }
+
+            // Store for potential usage (not strictly needed)
+            currentLink = link;
+
+            // Clear old QR container
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.innerHTML = "";
+
+            // Create new QR code. The library appends canvas/img to #qrcode
+            qr = new QRCode(qrContainer, {
+                text: link,
+                width: 200,
+                height: 200,
+                correctLevel: QRCode.CorrectLevel.H   // high error correction
+            });
+
+            // Show download button
+            document.getElementById("downloadBtn").style.display = "inline-flex";
+
+            // small feedback (optional)
+            const hintSmall = document.querySelector('.hint-text small');
+            if (hintSmall) {
+                hintSmall.innerHTML = link.length > 50 ? '✔ QR updated — ready to scan' : '✔ QR updated — click download to save';
+            }
+        }
+
+        function downloadQR() {
+            // qr might exist, but better check visible img/canvas
+            const qrDiv = document.getElementById("qrcode");
+            const img = qrDiv.querySelector("img");
+            const canvas = qrDiv.querySelector("canvas");
+
+            let src = null;
+            if (img) {
+                src = img.src;
+            } else if (canvas) {
+                // if library uses canvas (it can, depending on browser), convert to png
+                src = canvas.toDataURL("image/png");
+            }
+
+            if (!src) {
+                alert("QR code not found. Generate one first.");
+                return;
+            }
+
+            const link = document.createElement("a");
+            link.href = src;
+            link.download = "qr-forge.png";   // meaningful name
+            link.click();
+        }
+
+        // optional theme toggle (adds/removes dark class)
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+            const toggleBtn = document.getElementById("themeToggle");
+            const moonSun = toggleBtn.querySelector("i:first-child");
+            if (document.body.classList.contains("dark")) {
+                moonSun.className = "fas fa-sun";
+            } else {
+                moonSun.className = "fas fa-moon";
+            }
+        }
+
+        // ensure download button hidden initially (in case of slow load)
+        window.onload = function() {
+            document.getElementById("downloadBtn").style.display = "none";
+            // optional placeholder hint refresh
+        };
+
+        // Also if user presses Enter in input (nice)
+        document.getElementById("linkInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                generateQR();
+            }
+        });
+    </script>
+</body>
+</html>
