@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Rebus Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .mode-selector {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .mode-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .copy-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .copy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .output-container {
+            margin: 20px 0;
+        }
+
+        #output {
+            min-height: 100px;
+            padding: 20px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.3em;
+            line-height: 1.6;
+            word-break: break-word;
+            text-align: left;
+        }
+
+        .copy-status {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #48bb78;
+            min-height: 24px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #e53e3e;
+            padding: 10px;
+            background: #fed7d7;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .word-count {
+            text-align: right;
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Rebus Maker</h1>
+        <p class="subtitle">Turn any text into a creative rebus puzzle</p>
+
+        <textarea id="input" rows="3" placeholder="Type a sentence, e.g., 'I love the moon'"></textarea>
+        <div class="word-count" id="wordCount">0 words</div>
+
+        <div class="mode-selector">
+            <label for="mode">Choose a rebus style:</label>
+            <select id="mode">
+                <option value="emoji">😊 Emoji Only</option>
+                <option value="wordplay">🎭 Wordplay</option>
+                <option value="all" selected>✨ All in One</option>
+            </select>
+        </div>
+        
+        <div class="button-group">
+            <button class="generate-btn" onclick="generateRebus()">Generate Rebus</button>
+            <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()" disabled>Copy Rebus</button>
+        </div>
+
+        <div class="output-container">
+            <div id="output">👈 Enter text and click "Generate Rebus"</div>
+        </div>
+        <div id="copyStatus" class="copy-status"></div>
+    </div>
+
+    <script>
+        let wordMap = {};
+        let wordplayMap = {};
+
+        // Load data from JSON file
+        async function loadRebusData() {
+            try {
+                // Try to load from external JSON file
+                const response = await fetch('rebus-data.json');
+                if (!response.ok) {
+                    throw new Error('Could not load data file');
+                }
+                const data = await response.json();
+                wordMap = data.wordMap;
+                wordplayMap = data.wordplayMap;
+                console.log('Data loaded successfully!', Object.keys(wordMap).length, 'words');
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('output').innerHTML = 
+                    '<span class="error-message">❌ Could not load rebus data. Using fallback data.</span>';
+                // Fallback data met jouw structuur
+                wordMap = {
+                    "love": "❤️", "moon": "🌙", "sun": "☀️", "star": "⭐"
+                };
+                wordplayMap = {
+                    "ear": { "from": "are", "emoji": "📍", "remove": "", "add": "", "change": "a=e;e=a" },
+                    "eat": { "from": "at", "emoji": "🍽️", "remove": "", "add": "e", "change": "" },
+                    "fan": { "from": "van", "emoji": "🚐", "remove": "", "add": "", "change": "v=f" },
+                    "far": { "from": "car", "emoji": "🚗", "remove": "", "add": "", "change": "c=f" },
+                    "get": { "from": "jet", "emoji": "✈️", "remove": "", "add": "", "change": "j=g" },
+                    "god": { "from": "good", "emoji": "👍", "remove": "o", "add": "", "change": "" }
+                };
+            }
+        }
+
+        // Load data on startup
+        loadRebusData();
+
+        // Word counter for input
+        document.getElementById('input').addEventListener('input', function() {
+            const words = this.value.trim().split(/\s+/).filter(w => w.length > 0);
+            document.getElementById('wordCount').textContent = words.length + ' word' + (words.length !== 1 ? 's' : '');
+            
+            // Enable/disable copy button
+            document.getElementById('copyBtn').disabled = !this.value.trim();
+        });
+
+        function generateRebus() {
+            let inputText = document.getElementById("input").value.trim();
+            
+            if (!inputText) {
+                document.getElementById("output").innerHTML = 
+                    '<span class="error-message">⚠️ Please enter some text first!</span>';
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById("output").innerHTML = '<div class="loading"></div> Generating...';
+            
+            // Use setTimeout to let UI update
+            setTimeout(() => {
+                let rebusText = inputText;
+                let mode = document.getElementById("mode").value;
+
+                try {
+                    if (mode === "emoji") {
+                        rebusText = replaceWords(rebusText, wordMap);
+                    } else if (mode === "wordplay") {
+                        rebusText = replaceWordplay(rebusText, wordplayMap);
+                    } else if (mode === "all") {
+                        rebusText = replaceAll(rebusText, wordMap, wordplayMap);
+                    }
+
+                    document.getElementById("output").innerText = rebusText;
+                    document.getElementById("copyBtn").disabled = false;
+                } catch (error) {
+                    document.getElementById("output").innerHTML = 
+                        '<span class="error-message">❌ An error occurred</span>';
+                    console.error(error);
+                }
+            }, 100);
+        }
+
+        function replaceWords(text, map) {
+            let result = text;
+            // Sort words by length (longest first) to avoid partial replacements
+            const sortedWords = Object.keys(map).sort((a, b) => b.length - a.length);
+            
+            sortedWords.forEach(word => {
+                let regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+                result = result.replace(regex, map[word]);
+            });
+            return result;
+        }
+
+        function formatWordplay(trans) {
+            let parts = [];
+            
+            // Check remove (alleen als het niet leeg is)
+            if (trans.remove && trans.remove !== "") {
+                parts.push(`-${trans.remove}`);
+            }
+            
+            // Check add (alleen als het niet leeg is)
+            if (trans.add && trans.add !== "") {
+                parts.push(`+${trans.add}`);
+            }
+            
+            // Check change (alleen als het niet leeg is)
+            if (trans.change && trans.change !== "") {
+                parts.push(trans.change);
+            }
+            
+            return parts.join(' ');
+        }
+
+        function replaceWordplay(text, map) {
+            let result = text;
+            const sortedWords = Object.keys(map).sort((a, b) => b.length - a.length);
+            
+            sortedWords.forEach(word => {
+                let regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+                let trans = map[word];
+                let formatted = formatWordplay(trans);
+                if (formatted) {
+                    result = result.replace(regex, `${trans.emoji} (${formatted})`);
+                } else {
+                    result = result.replace(regex, trans.emoji);
+                }
+            });
+            return result;
+        }
+
+        function replaceAll(text, wordMap, wordplayMap) {
+            let result = text;
+            
+            // First process wordplay words (these are more specific)
+            const sortedWordplay = Object.keys(wordplayMap).sort((a, b) => b.length - a.length);
+            sortedWordplay.forEach(word => {
+                let regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+                let trans = wordplayMap[word];
+                // 50% chance for wordplay or emoji
+                if (Math.random() < 0.5) {
+                    let formatted = formatWordplay(trans);
+                    if (formatted) {
+                        result = result.replace(regex, `${trans.emoji} (${formatted})`);
+                    } else {
+                        result = result.replace(regex, trans.emoji);
+                    }
+                } else if (wordMap[word]) {
+                    result = result.replace(regex, wordMap[word]);
+                }
+            });
+            
+            // Then process regular emoji for remaining words
+            const sortedEmoji = Object.keys(wordMap).sort((a, b) => b.length - a.length);
+            sortedEmoji.forEach(word => {
+                let regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+                // Only replace if the word hasn't been replaced yet
+                if (!result.match(regex)?.some(match => match.includes(wordMap[word]))) {
+                    result = result.replace(regex, wordMap[word]);
+                }
+            });
+            
+            return result;
+        }
+
+        // Escape special characters for regex
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        async function copyToClipboard() {
+            let outputText = document.getElementById("output").innerText;
+            if (outputText && !outputText.includes('⚠️') && !outputText.includes('❌')) {
+                try {
+                    await navigator.clipboard.writeText(outputText);
+                    let status = document.getElementById("copyStatus");
+                    status.innerText = "✅ Rebus copied to clipboard!";
+                    status.style.color = "#48bb78";
+                    
+                    // Add animation
+                    document.getElementById("output").style.transform = "scale(1.02)";
+                    setTimeout(() => {
+                        document.getElementById("output").style.transform = "scale(1)";
+                    }, 200);
+                    
+                    setTimeout(() => status.innerText = "", 2000);
+                } catch (err) {
+                    document.getElementById("copyStatus").innerText = "❌ Failed to copy!";
+                    document.getElementById("copyStatus").style.color = "#e53e3e";
+                }
+            }
+        }
+
+        // Enter key in textarea
+        document.getElementById("input").addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                generateRebus();
+            }
+        });
+
+        // Reset status on new input
+        document.getElementById("input").addEventListener("input", function() {
+            document.getElementById("copyStatus").innerText = "";
+        });
+    </script>
+</body>
+</html>
