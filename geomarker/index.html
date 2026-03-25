@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoMarker | Interactive Map Tool</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --secondary: #3f37c9;
+        --danger: #f72585;
+        --success: #4cc9f0;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --border-radius: 12px;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f5f7fa;
+        color: var(--dark);
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    header {
+        background: white;
+        box-shadow: var(--shadow);
+        padding: 20px 0;
+        margin-bottom: 30px;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo-icon {
+        font-size: 28px;
+    }
+
+    .main-layout {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 30px;
+    }
+
+    .map-area {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .map-header {
+        background: white;
+        padding: 15px 20px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .map-header-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sidebar {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 25px;
+        box-shadow: var(--shadow);
+        height: fit-content;
+    }
+
+    .map-container {
+        position: relative;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        height: 700px;
+        flex-grow: 1;
+    }
+
+    #map {
+        height: 100%;
+        width: 100%;
+        background: #e9ecef;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: var(--dark);
+        font-weight: 600;
+    }
+
+    h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: var(--dark);
+        font-weight: 500;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--gray);
+        font-size: 14px;
+    }
+
+    input[type="text"],
+    select {
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: var(--border-radius);
+        font-size: 14px;
+        transition: var(--transition);
+        background: white;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        border-radius: var(--border-radius);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background-color: white;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+        background-color: #f0f4ff;
+    }
+
+    .btn-danger {
+        background-color: var(--danger);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #e5177b;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn-icon {
+        font-size: 16px;
+    }
+
+    .legend {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 20px;
+        margin-top: 30px;
+        box-shadow: var(--shadow);
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        transition: var(--transition);
+        cursor: pointer;
+    }
+
+    .legend-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .legend-item.active {
+        background-color: #f0f4ff;
+        border-left: 3px solid var(--primary);
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+
+    .legend-details {
+        flex-grow: 1;
+        font-size: 14px;
+    }
+
+    .legend-name {
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+
+    .legend-meta {
+        display: flex;
+        gap: 15px;
+        font-size: 12px;
+        color: var(--gray);
+    }
+
+    .legend-actions {
+        display: flex;
+        gap: 10px;
+        margin-left: 10px;
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--gray);
+        transition: var(--transition);
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+    }
+
+    .action-btn:hover {
+        background: #f1f1f1;
+        color: var(--dark);
+    }
+
+    .edit-btn {
+        color: var(--primary);
+    }
+
+    .delete-btn {
+        color: var(--danger);
+    }
+
+    .color-btn {
+        color: var(--success);
+    }
+
+    /* Modal styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+    }
+
+    .modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 30px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: var(--shadow);
+        transform: translateY(20px);
+        transition: var(--transition);
+    }
+
+    .modal.active .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .modal-body {
+        margin-bottom: 25px;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    /* Color picker */
+    .color-picker {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .color-picker-input {
+        width: 50px;
+        height: 40px;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Map controls */
+    .map-controls {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        gap: 10px;
+    }
+
+    .map-control-btn {
+        background: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+        border: none;
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--dark);
+    }
+
+    .map-control-btn:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .main-layout {
+            grid-template-columns: 1fr;
+        }
+        
+        .sidebar {
+            order: 2;
+        }
+        
+        .map-area {
+            order: 1;
+        }
+
+        .map-container {
+            height: 500px;
+        }
+
+        .map-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .map-header-group {
+            width: 100%;
+        }
+
+        .map-header-group:first-child {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .btn {
+            padding: 10px 15px;
+            font-size: 13px;
+        }
+
+        .map-header {
+            padding: 15px;
+        }
+
+        .map-controls {
+            top: 10px;
+            right: 10px;
+        }
+
+        .map-control-btn {
+            width: 35px;
+            height: 35px;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <span class="logo-icon">🗺️</span>
+                <span>GeoMarker</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="main-layout">
+            <div class="sidebar">
+                <h1>Map Controls</h1>
+                
+                <div class="form-group">
+                    <label for="mapStyle">Map Style:</label>
+                    <select id="mapStyle">
+                        <option value="streets">Streets</option>
+                        <option value="satellite">Satellite</option>
+                        <option value="terrain">Terrain</option>
+                        <option value="transport">Transport</option>
+                        <option value="cycle">Cycle</option>
+                        <option value="watercolor">Watercolor</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group">
+                    <button onclick="startNewArea()" class="btn btn-primary">
+                        <span class="btn-icon">➕</span>
+                        New Area
+                    </button>
+                    <button onclick="resetMap()" class="btn btn-danger">
+                        <span class="btn-icon">🗑️</span>
+                        Reset
+                    </button>
+                </div>
+                
+                <h2 style="margin-top: 30px;">Areas</h2>
+                <div id="legend" class="legend">
+                    <!-- Areas will appear here dynamically -->
+                </div>
+            </div>
+            
+            <div class="map-area">
+                <div class="map-header">
+                    <div class="map-header-group">
+                        <label for="mapName">Map Name:</label>
+                        <input type="text" id="mapName" placeholder="Enter a name" style="width: 200px;">
+                    <div class="map-header-group">
+                        <button id="loadButton" class="btn btn-secondary">
+                            <span class="btn-icon">📂</span>
+                            Load Map
+                        </button>
+                        <button id="saveButton" class="btn btn-primary">
+                            <span class="btn-icon">💾</span>
+                            Save
+                        </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="map-container">
+                    <div id="map"></div>
+                    <div class="map-controls">
+                        <button onclick="startNewArea()" class="map-control-btn" title="New Area">➕</button>
+                        <button onclick="undoLastAction()" class="map-control-btn" title="Undo">↩️</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div id="resetModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Reset Map</h3>
+            <div class="modal-body">
+                <p>Are you sure you want to reset the map? This will delete all areas.</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="confirmResetMap(false)" class="btn btn-secondary">Cancel</button>
+                <button onclick="confirmResetMap(true)" class="btn btn-danger">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Delete Area</h3>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this area?</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="confirmDeleteArea(false)" class="btn btn-secondary">Cancel</button>
+                <button onclick="confirmDeleteArea(true)" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="colorPickerModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Change Area Color</h3>
+            <div class="modal-body">
+                <p>Choose a new color for the area:</p>
+                <div class="color-picker">
+                    <input type="color" id="colorPickerInput" class="color-picker-input">
+                    <span id="colorHexValue">#4361ee</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeColorPicker()" class="btn btn-secondary">Cancel</button>
+                <button onclick="confirmColorChange()" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize map
+        let map = L.map('map').setView([52.3676, 4.9041], 6);
+        
+        // Map styles
+        const mapStyles = {
+            streets: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }),
+            satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            }),
+            terrain: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }),
+            transport: L.tileLayer('https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=6170aad10dfd42a38d4d8c709a536f38', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+            }),
+            cycle: L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }),
+            watercolor: L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg', {
+                attribution: 'Tiles by <a href="http://stamen.com">Stamen Design</a>'
+            })
+        };
+
+        // Add default style
+        mapStyles.streets.addTo(map);
+
+        // Global variables
+        let allAreas = [];
+        let currentArea = null;
+        let colorIndex = 0;
+        const colors = ['#4361ee', '#3f37c9', '#4895ef', '#4cc9f0', '#7209b7', '#b5179e', '#f72585', '#560bad'];
+        let currentMapName = '';
+
+        // Color picker input
+        document.getElementById('colorPickerInput').addEventListener('input', function(e) {
+            document.getElementById('colorHexValue').textContent = e.target.value;
+        });
+
+        // Map style switcher
+        document.getElementById('mapStyle').addEventListener('change', function(e) {
+            Object.values(mapStyles).forEach(layer => map.removeLayer(layer));
+            mapStyles[e.target.value].addTo(map);
+            allAreas.forEach(area => {
+                if (area.polygon) area.polygon.addTo(map);
+                if (area.label) area.label.addTo(map);
+            });
+        });
+
+        // Map click handler
+        map.on('click', function(e) {
+            if (!currentArea) return;
+
+            let latlng = [e.latlng.lat, e.latlng.lng];
+            let marker = L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'area-point-marker',
+                    iconSize: [12, 12],
+                    html: `<div style="background-color: ${currentArea.color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px ${currentArea.color}"></div>`
+                })
+            }).addTo(map);
+            
+            currentArea.points.push(latlng);
+            currentArea.markers.push(marker);
+            updatePolygon(currentArea);
+        });
+
+        // Update polygon
+        function updatePolygon(area) {
+            if (area.polygon) map.removeLayer(area.polygon);
+            if (area.label) map.removeLayer(area.label);
+            if (area.points.length < 3) return;
+
+            let center = calculateCenter(area.points);
+            let sortedPoints = sortPointsByAngle(area.points, center);
+            let polygonPoints = sortedPoints.concat([sortedPoints[0]]);
+
+            area.polygon = L.polygon(polygonPoints, { 
+                color: area.color,
+                fillColor: area.color,
+                fillOpacity: 0.2,
+                weight: 3
+            }).addTo(map);
+            
+            area.label = L.marker(center, {
+                icon: L.divIcon({
+                    className: 'polygon-label',
+                    html: `<div style="background: white; padding: 5px 10px; border-radius: 20px; border: 2px solid ${area.color}; color: ${area.color}; font-weight: 600; font-size: 14px;">${area.name}</div>`,
+                    iconSize: [100, 30]
+                })
+            }).addTo(map);
+
+            updateLegend();
+        }
+
+        // Helper functions
+        function calculateCenter(points) {
+            let xSum = 0, ySum = 0;
+            points.forEach(p => {
+                xSum += p[1];
+                ySum += p[0];
+            });
+            return [ySum / points.length, xSum / points.length];
+        }
+
+        function sortPointsByAngle(points, center) {
+            return points.map(p => {
+                let angle = Math.atan2(p[1] - center[1], p[0] - center[0]) * 180 / Math.PI;
+                return { point: p, angle: (angle + 360) % 360 };
+            })
+            .sort((a, b) => a.angle - b.angle)
+            .map(item => item.point);
+        }
+
+        // Area management
+        function startNewArea() {
+            let color = colors[colorIndex % colors.length];
+            let area = {
+                points: [],
+                markers: [],
+                polygon: null,
+                label: null,
+                color,
+                name: `Area ${colorIndex + 1}`
+            };
+            allAreas.push(area);
+            selectArea(allAreas.length - 1);
+            colorIndex++;
+        }
+
+        function undoLastAction() {
+            if (!currentArea || currentArea.points.length === 0) return;
+
+            let removedPoint = currentArea.points.pop();
+            let removedMarker = currentArea.markers.pop();
+            map.removeLayer(removedMarker);
+            updatePolygon(currentArea);
+        }
+
+        function resetMap() {
+            document.getElementById('resetModal').classList.add('active');
+        }
+
+        function confirmResetMap(confirm) {
+            if (confirm) {
+                allAreas.forEach(area => removeArea(area));
+                allAreas = [];
+                currentArea = null;
+                colorIndex = 0;
+                currentMapName = '';
+                document.getElementById('mapName').value = '';
+                updateLegend();
+            }
+            document.getElementById('resetModal').classList.remove('active');
+        }
+
+        function removeArea(area) {
+            area.markers.forEach(marker => map.removeLayer(marker));
+            if (area.polygon) map.removeLayer(area.polygon);
+            if (area.label) map.removeLayer(area.label);
+        }
+
+        function deleteArea(index) {
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function confirmDeleteArea(confirm) {
+            if (confirm) {
+                removeArea(currentArea);
+                allAreas = allAreas.filter(a => a !== currentArea);
+                currentArea = null;
+                updateLegend();
+            }
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        function editArea() {
+            if (currentArea) {
+                let newName = prompt('Enter new area name:', currentArea.name);
+                if (newName !== null) {
+                    currentArea.name = newName;
+                    updatePolygon(currentArea);
+                }
+            }
+        }
+
+        function changeColor() {
+            if (currentArea) {
+                document.getElementById('colorPickerInput').value = currentArea.color;
+                document.getElementById('colorHexValue').textContent = currentArea.color;
+                document.getElementById('colorPickerModal').classList.add('active');
+            }
+        }
+
+        function confirmColorChange() {
+            if (currentArea) {
+                currentArea.color = document.getElementById('colorPickerInput').value;
+                updatePolygon(currentArea);
+            }
+            closeColorPicker();
+        }
+
+        function closeColorPicker() {
+            document.getElementById('colorPickerModal').classList.remove('active');
+        }
+
+        function calculateArea(points) {
+            let area = 0;
+            const earthRadius = 6378137;
+            const toRadians = (degrees) => degrees * (Math.PI / 180);
+
+            for (let i = 0; i < points.length; i++) {
+                const p1 = points[i];
+                const p2 = points[(i + 1) % points.length];
+                const lat1 = toRadians(p1[0]);
+                const lng1 = toRadians(p1[1]);
+                const lat2 = toRadians(p2[0]);
+                const lng2 = toRadians(p2[1]);
+
+                area += (lng2 - lng1) * (2 + Math.sin(lat1) + Math.sin(lat2));
+            }
+
+            area = (Math.abs(area) * earthRadius * earthRadius) / 2;
+            return (area / 1e6).toFixed(2);
+        }
+
+        function calculatePerimeter(points) {
+            let perimeter = 0;
+            const earthRadius = 6378137;
+            const toRadians = (degrees) => degrees * (Math.PI / 180);
+
+            for (let i = 0; i < points.length; i++) {
+                const p1 = points[i];
+                const p2 = points[(i + 1) % points.length];
+                const lat1 = toRadians(p1[0]);
+                const lng1 = toRadians(p1[1]);
+                const lat2 = toRadians(p2[0]);
+                const lng2 = toRadians(p2[1]);
+
+                const dLat = lat2 - lat1;
+                const dLng = lng2 - lng1;
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                          Math.cos(lat1) * Math.cos(lat2) *
+                          Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                perimeter += earthRadius * c;
+            }
+
+            return (perimeter / 1000).toFixed(2);
+        }
+
+        function updateLegend() {
+            const legend = document.getElementById('legend');
+            legend.innerHTML = '';
+
+            allAreas.forEach((area, index) => {
+                const perimeter = calculatePerimeter(area.points);
+                const areaSize = calculateArea(area.points);
+
+                let div = document.createElement('div');
+                div.className = `legend-item ${area === currentArea ? 'active' : ''}`;
+                div.innerHTML = `
+                    <div class="legend-color" style="background-color: ${area.color}"></div>
+                    <div class="legend-details">
+                        <div class="legend-name">${area.name}</div>
+                        <div class="legend-meta">
+                            <span>${perimeter} km perimeter</span>
+                            <span>${areaSize} km² area</span>
+                        </div>
+                    </div>
+                    <div class="legend-actions">
+                        <button class="action-btn edit-btn" onclick="editArea()">✏️</button>
+                        <button class="action-btn color-btn" onclick="changeColor()">🎨</button>
+                        <button class="action-btn delete-btn" onclick="deleteArea(${index})">🗑️</button>
+                    </div>
+                `;
+                div.addEventListener('click', () => selectArea(index));
+                legend.appendChild(div);
+            });
+        }
+
+        function changeAreaName(index, newName) {
+            allAreas[index].name = newName;
+            updatePolygon(allAreas[index]);
+        }
+
+        function selectArea(index) {
+            currentArea = allAreas[index];
+            updateLegend();
+        }
+
+        // Save function
+        document.getElementById('saveButton').addEventListener('click', function() {
+            const mapName = document.getElementById('mapName').value.trim();
+            if (!mapName) {
+                alert('Please enter a map name');
+                return;
+            }
+            
+            currentMapName = mapName;
+            let areasData = allAreas.map(area => ({
+                name: area.name,
+                color: area.color,
+                points: area.points
+            }));
+            
+            let json = JSON.stringify({ 
+                mapName: currentMapName, 
+                areas: areasData,
+                mapStyle: document.getElementById('mapStyle').value
+            });
+            
+            let blob = new Blob([json], { type: 'application/json' });
+            let link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${currentMapName}.geomap`;
+            link.click();
+        });
+
+        // Combined load function
+        document.getElementById('loadButton').addEventListener('click', function() {
+            // Create a temporary file input
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.geomap,.json';
+            fileInput.style.display = 'none';
+            
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length === 0) return;
+                
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        let data = JSON.parse(e.target.result);
+                        
+                        // Reset current map
+                        allAreas.forEach(area => removeArea(area));
+                        allAreas = [];
+                        
+                        // Load new data
+                        document.getElementById('mapName').value = data.mapName;
+                        currentMapName = data.mapName;
+                        
+                        if (data.mapStyle) {
+                            document.getElementById('mapStyle').value = data.mapStyle;
+                            document.getElementById('mapStyle').dispatchEvent(new Event('change'));
+                        }
+                        
+                        allAreas = data.areas.map(areaData => {
+                            let area = {
+                                name: areaData.name,
+                                color: areaData.color,
+                                points: areaData.points,
+                                markers: [],
+                                polygon: null,
+                                label: null
+                            };
+                            
+                            areaData.points.forEach(p => {
+                                let marker = L.marker([p[0], p[1]], {
+                                    icon: L.divIcon({
+                                        className: 'area-point-marker',
+                                        iconSize: [12, 12],
+                                        html: `<div style="background-color: ${area.color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px ${area.color}"></div>`
+                                    })
+                                }).addTo(map);
+                                area.markers.push(marker);
+                            });
+                            
+                            updatePolygon(area);
+                            return area;
+                        });
+                        
+                        updateLegend();
+                    } catch (error) {
+                        alert('Error loading map file: ' + error.message);
+                    }
+                };
+                
+                reader.readAsText(file);
+            });
+            
+            // Trigger the file selection dialog
+            fileInput.click();
+        });
+    </script>
+</body>
+</html>

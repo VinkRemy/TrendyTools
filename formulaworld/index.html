@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel formule generator · template</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+        body {
+            background: #f3f2f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 2rem 1rem;
+        }
+        .card {
+            max-width: 950px;
+            width: 100%;
+            background: white;
+            border-radius: 28px 28px 24px 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2), 0 8px 16px -8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .header {
+            background: #1e3c4f;
+            color: white;
+            padding: 1.8rem 2.2rem 1.4rem 2.2rem;
+        }
+        .header h1 {
+            margin: 0;
+            font-weight: 500;
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header h1 span {
+            background: #40768c;
+            font-size: 1rem;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+        .header p {
+            margin: 8px 0 0;
+            opacity: 0.85;
+            font-size: 1rem;
+        }
+        .cel-balk {
+            background: #e7e4e1;
+            padding: 1.2rem 2.2rem;
+            border-bottom: 1px solid #cccac7;
+        }
+        .cel-label {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+        }
+        .cel-label strong {
+            font-weight: 500;
+            color: #1e3c4f;
+            min-width: 100px;
+            font-size: 1.1rem;
+        }
+        .cel-input-group {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 60px;
+            padding: 0.1rem 0.1rem 0.1rem 1.5rem;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.02), 0 0 0 1px #b2b0ad;
+            flex: 1 1 250px;
+        }
+        .cel-input-group:focus-within {
+            box-shadow: 0 0 0 3px #609ab6, inset 0 1px 4px white;
+        }
+        .cel-input-group input {
+            border: none;
+            padding: 0.8rem 0.5rem 0.8rem 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+            width: 100px;
+            outline: none;
+            background: transparent;
+            color: #0b2b38;
+            text-transform: uppercase;
+        }
+        .cel-input-group input::placeholder {
+            color: #a6a39f;
+            font-weight: 300;
+            font-size: 1rem;
+        }
+        .cel-input-group span {
+            background: #f0eae4;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            color: #375f72;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        .main {
+            padding: 2.2rem;
+            background: #ffffff;
+        }
+        .twee-kolommen {
+            display: grid;
+            grid-template-columns: 0.9fr 1.8fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        @media (max-width: 650px) {
+            .twee-kolommen {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        .formule-lijst {
+            background: #f8f6f4;
+            border-radius: 24px;
+            padding: 1.6rem 1.2rem;
+            border: 1px solid #e0dbd5;
+        }
+        .formule-lijst h3, .parameters-h3 {
+            font-weight: 500;
+            font-size: 1.2rem;
+            margin: 0 0 0.5rem 0;
+            color: #002b36;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .formule-lijst h3 i {
+            font-size: 1.3rem;
+            font-style: normal;
+        }
+        .checkbox-groep {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.4rem 0 0.8rem;
+        }
+        .formule-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 40px;
+            padding: 0.2rem 0.2rem 0.2rem 1.2rem;
+            border: 1px solid #d4cdc6;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+        .formule-item:hover {
+            background: #f2efe9;
+            border-color: #a7a8b2;
+        }
+        .formule-item input[type="checkbox"] {
+            width: 1.3rem;
+            height: 1.3rem;
+            accent-color: #1e6f8f;
+            margin-right: 10px;
+            pointer-events: auto;
+        }
+        .formule-item label {
+            font-size: 1.1rem;
+            font-weight: 450;
+            color: #1d2c34;
+            flex: 1;
+            cursor: pointer;
+            padding: 0.7rem 0;
+        }
+        .badge {
+            background: #d6e2e9;
+            border-radius: 30px;
+            padding: 0.3rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.03rem;
+            color: #1e3c4f;
+            margin-right: 6px;
+        }
+        .parameter-paneel {
+            background: #f8f6f4;
+            border-radius: 28px;
+            padding: 1.6rem 1.6rem 1.8rem 1.6rem;
+            border: 1px solid #e0dbd5;
+        }
+        .parameter-paneel h3 {
+            margin-top: 0;
+            margin-bottom: 1.2rem;
+        }
+        .param-blok {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .param-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #1b4e65;
+            border-left: 4px solid #2b7c9c;
+            padding-left: 0.8rem;
+        }
+        .param-rij {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            gap: 8px;
+        }
+        .param-rij label {
+            min-width: 90px;
+            font-weight: 500;
+            color: #344854;
+        }
+        .param-rij input, .param-rij select {
+            padding: 0.6rem 1rem;
+            border: 1px solid #cbc3bb;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            flex: 1 1 180px;
+            background: white;
+            transition: 0.1s;
+        }
+        .param-rij input:focus, .param-rij select:focus {
+            border-color: #1e6f8f;
+            outline: 2px solid #9ec5d9;
+            outline-offset: 0;
+        }
+        .hint {
+            color: #6d6e71;
+            font-size: 0.85rem;
+            padding-left: 98px;
+            margin-top: -6px;
+            margin-bottom: 14px;
+        }
+        .volgorde-opties {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+            margin: 0.4rem 0 0.8rem 0;
+        }
+        .volgorde-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .volgorde-item input[type="radio"] {
+            accent-color: #1e6f8f;
+            width: 1.1rem;
+            height: 1.1rem;
+            margin: 0;
+        }
+        .voeg-toe-knop {
+            background: white;
+            border: 2px dashed #6d8998;
+            color: #1e4d62;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 100%;
+            margin-top: 2rem;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .voeg-toe-knop:hover {
+            background: #e3f0f5;
+            border: 2px solid #1e6f8f;
+        }
+        .formule-uitvoer {
+            background: #e3eef3;
+            border-radius: 18px;
+            margin-top: 2rem;
+            padding: 0.8rem 1.8rem;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #baced9;
+        }
+        .formule-uitvoer span {
+            font-weight: 500;
+            color: #0b445a;
+        }
+        .formule-uitvoer code {
+            background: #1c3643;
+            color: #c3e2f0;
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            font-size: 1.3rem;
+            letter-spacing: 0.3px;
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            word-break: break-word;
+        }
+        .footer-notitie {
+            font-size: 0.8rem;
+            color: #6b6b6b;
+            text-align: right;
+            margin-top: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="header">
+        <h1>📗 Excel-formule generator <span>X.ZOEKEN · SOM.ALS · meer</span></h1>
+        <p>Kruis aan, vul argumenten, bouw de formule. Cel verwijzingen zoals E8 of $B$4 worden herkend.</p>
+    </div>
+
+    <!-- Doelcel: waar formule komt te staan -->
+    <div class="cel-balk">
+        <div class="cel-label">
+            <strong>📌 Formule in cel</strong>
+            <div class="cel-input-group">
+                <input type="text" id="doelCel" placeholder="bijv. E8" value="E8" maxlength="8">
+                <span>bijv. E8, $A$1, F12</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="twee-kolommen">
+            <!-- LINKERKOLOM: formules met checkbox -->
+            <div class="formule-lijst">
+                <h3><i>✅</i> 1. Kies formule(s)</h3>
+                <div class="checkbox-groep" id="formuleCheckboxLijst">
+                    <div class="formule-item">
+                        <input type="checkbox" id="cbXlookup" class="formule-cb" data-formule="XLOOKUP" checked>
+                        <label for="cbXlookup">X.ZOEKEN</label>
+                        <span class="badge">zoeken/ verwijzen</span>
+                    </div>
+                    <div class="formule-item">
+                        <input type="checkbox" id="cbSomAls" class="formule-cb" data-formule="SUMIF">
+                        <label for="cbSomAls">SOM.ALS</label>
+                        <span class="badge">voorwaardelijk</span>
+                    </div>
+                    <div class="formule-item">
+                        <input type="checkbox" id="cbGemiddeldAls" class="formule-cb" data-formule="AVERAGEIF">
+                        <label for="cbGemiddeldAls">GEMIDDELDE.ALS</label>
+                        <span class="badge">statistisch</span>
+                    </div>
+                    <div class="formule-item">
+                        <input type="checkbox" id="cbIndex" class="formule-cb" data-formule="INDEX">
+                        <label for="cbIndex">INDEX</label>
+                        <span class="badge">verwijzen</span>
+                    </div>
+                    <div class="formule-item">
+                        <input type="checkbox" id="cbVertZoeken" class="formule-cb" data-formule="VLOOKUP">
+                        <label for="cbVertZoeken">VERT.ZOEKEN</label>
+                        <span class="badge">horizontaal</span>
+                    </div>
+                </div>
+                <p style="font-size:0.85rem; color:#6b4f3a; margin: 0.6rem 0 0;">&#10033; meerdere combinaties mogelijk (geneste formules).</p>
+            </div>
+
+            <!-- RECHTERKOLOM: dynamische parameters afhankelijk van selectie -->
+            <div class="parameter-paneel" id="parameterPaneel">
+                <h3 class="parameters-h3">⚙️ 2. parameters & celverwijzingen</h3>
+                <div class="param-blok" id="paramBlokDynamisch">
+                    <!-- Wordt ingevuld door javascript (standaard XLOOKUP) -->
+                </div>
+                <button class="voeg-toe-knop" id="voegToeAanFormule">➕ voeg parameterblok toe aan formulebouwer</button>
+            </div>
+        </div>
+
+        <!-- UITVOER / gegenereerde formule -->
+        <div class="formule-uitvoer">
+            <span>📋 gegenereerd:</span>
+            <code id="formuleUitvoer">=XLOOKUP(F2; B:B; D:D)</code>
+        </div>
+        <div class="footer-notitie">
+            ⬆ celverwijzingen handmatig aanpassen • oplopend/aflopend via sorteervolgorde
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ** state **
+        let doelCel = 'E8';                   // standaard cel
+        let geselecteerdeFormules = new Set(['XLOOKUP']); // initieel XLOOKUP actief
+
+        // ** DOM elementen **
+        const doelCelInput = document.getElementById('doelCel');
+        const formuleCheckboxes = document.querySelectorAll('.formule-cb');
+        const paramBlokDiv = document.getElementById('paramBlokDynamisch');
+        const formuleUitvoerCode = document.getElementById('formuleUitvoer');
+        const voegToeKnop = document.getElementById('voegToeAanFormule');
+
+        // ** parameters voor opslag (laatst ingevulde waarden per formule) **
+        let paramCache = {
+            XLOOKUP: { lookup: 'F2', array: 'B:B', retarray: 'D:D', nietgevonden: '""', sortmode: '1' },  // 1 = oplopend, -1 = aflopend, 2 = binair
+            SUMIF: { range: 'B:B', criteria: '">10"', sumrange: 'C:C' },
+            AVERAGEIF: { range: 'C:C', criteria: '"<>0"', avgrange: 'C:C' },
+            INDEX: { array: 'A1:C10', rij: '2', kolom: '3' },
+            VLOOKUP: { lookup: 'G5', tabel: 'A:D', kolomindex: '2', bereikzoeken: '0' }
+        };
+
+        // ** helper: doelcel bijwerken **
+        function updateDoelCel() {
+            let val = doelCelInput.value.trim().toUpperCase();
+            if (val === '') val = 'E8';
+            // simpele sanity check: accepteer A1, $B$4, etc.
+            doelCel = val;
+        }
+
+        // ** sync checkboxes met Set **
+        function updateCheckboxesFromSet() {
+            formuleCheckboxes.forEach(cb => {
+                const formuleNaam = cb.dataset.formule;
+                cb.checked = geselecteerdeFormules.has(formuleNaam);
+            });
+        }
+
+        // ** zet Set o.b.v. checkboxes **
+        function updateSetFromCheckboxes() {
+            geselecteerdeFormules.clear();
+            formuleCheckboxes.forEach(cb => {
+                if (cb.checked) {
+                    geselecteerdeFormules.add(cb.dataset.formule);
+                }
+            });
+            // fallback: als niks geselecteerd, forceer XLOOKUP
+            if (geselecteerdeFormules.size === 0) {
+                geselecteerdeFormules.add('XLOOKUP');
+                updateCheckboxesFromSet();
+            }
+        }
+
+        // ** dynamische parameterweergave op basis van eerste geselecteerde formule **
+        function renderParameters() {
+            const selectedArray = Array.from(geselecteerdeFormules);
+            if (selectedArray.length === 0) return;
+
+            // toon parameters van de eerst gekozen formule (voor bouwervaring)
+            const primary = selectedArray[0]; 
+            let html = `<div class="param-title">📐 parameters: ${primary}</div>`;
+
+            if (primary === 'XLOOKUP') {
+                const p = paramCache.XLOOKUP;
+                html += `
+                    <div class="param-rij"><label>lookup_value</label><input type="text" id="param1" value="${p.lookup}" placeholder="F2, A5, etc."></div>
+                    <div class="param-rij"><label>lookup_array</label><input type="text" id="param2" value="${p.array}" placeholder="B:B, Tabel1[kol]"></div>
+                    <div class="param-rij"><label>return_array</label><input type="text" id="param3" value="${p.retarray}" placeholder="D:D"></div>
+                    <div class="param-rij"><label>[if_not_found]</label><input type="text" id="param4" value="${p.nietgevonden}" placeholder=""""></div>
+                    <div class="volgorde-opties">
+                        <span style="font-weight:500;">⥮ zoekvolgorde:</span>
+                        <label class="volgorde-item"><input type="radio" name="xlookupSort" value="1" ${p.sortmode === '1' ? 'checked' : ''}> oplopend (1)</label>
+                        <label class="volgorde-item"><input type="radio" name="xlookupSort" value="-1" ${p.sortmode === '-1' ? 'checked' : ''}> aflopend (-1)</label>
+                        <label class="volgorde-item"><input type="radio" name="xlookupSort" value="2" ${p.sortmode === '2' ? 'checked' : ''}> binair (2)</label>
+                    </div>
+                    <div class="hint">⚡ sorteervolgorde bepaalt zoekrichting (1 = oplopend, -1 = aflopend).</div>
+                `;
+            } else if (primary === 'SUMIF') {
+                const p = paramCache.SUMIF;
+                html += `
+                    <div class="param-rij"><label>range</label><input type="text" id="param1" value="${p.range}" placeholder="A:A"></div>
+                    <div class="param-rij"><label>criteria</label><input type="text" id="param2" value="${p.criteria}" placeholder='">10"'></div>
+                    <div class="param-rij"><label>sum_range</label><input type="text" id="param3" value="${p.sumrange}" placeholder="C:C"></div>
+                `;
+            } else if (primary === 'AVERAGEIF') {
+                const p = paramCache.AVERAGEIF;
+                html += `
+                    <div class="param-rij"><label>range</label><input type="text" id="param1" value="${p.range}" placeholder="C:C"></div>
+                    <div class="param-rij"><label>criteria</label><input type="text" id="param2" value="${p.criteria}" placeholder='"<>0"'></div>
+                    <div class="param-rij"><label>average_range</label><input type="text" id="param3" value="${p.avgrange}" placeholder="C:C"></div>
+                `;
+            } else if (primary === 'INDEX') {
+                const p = paramCache.INDEX;
+                html += `
+                    <div class="param-rij"><label>array</label><input type="text" id="param1" value="${p.array}" placeholder="A1:C10"></div>
+                    <div class="param-rij"><label>row_num</label><input type="text" id="param2" value="${p.rij}" placeholder="2"></div>
+                    <div class="param-rij"><label>[column_num]</label><input type="text" id="param3" value="${p.kolom}" placeholder="3"></div>
+                `;
+            } else if (primary === 'VLOOKUP') {
+                const p = paramCache.VERT.ZOEKEN || paramCache.VLOOKUP; 
+                html += `
+                    <div class="param-rij"><label>lookup_value</label><input type="text" id="param1" value="${p.lookup}" placeholder="G5"></div>
+                    <div class="param-rij"><label>table_array</label><input type="text" id="param2" value="${p.tabel}" placeholder="A:D"></div>
+                    <div class="param-rij"><label>col_index_num</label><input type="text" id="param3" value="${p.kolomindex}" placeholder="2"></div>
+                    <div class="param-rij"><label>[range_lookup]</label><input type="text" id="param4" value="${p.bereikzoeken}" placeholder="0"></div>
+                `;
+            } else {
+                html += `<p>geen parametervelden bekend voor ${primary}</p>`;
+            }
+
+            paramBlokDiv.innerHTML = html;
+
+            // event listeners voor XLOOKUP radio (sorteer opslaan)
+            if (primary === 'XLOOKUP') {
+                document.querySelectorAll('input[name="xlookupSort"]').forEach(radio => {
+                    radio.addEventListener('change', function(e) {
+                        paramCache.XLOOKUP.sortmode = e.target.value;
+                        genereerFormuleTekst(); // live update
+                    });
+                });
+                // ook tekstinputs bijhouden (keyup)
+                attachInputListeners(primary);
+            } else if (primary === 'SUMIF') attachInputListeners(primary);
+            else if (primary === 'AVERAGEIF') attachInputListeners(primary);
+            else if (primary === 'INDEX') attachInputListeners(primary);
+            else if (primary === 'VLOOKUP') attachInputListeners(primary);
+        }
+
+        // helper: input wijzigingen bijwerken in cache en herberekenen
+        function attachInputListeners(formuleType) {
+            const inputs = document.querySelectorAll('#paramBlokDynamisch input[type="text"]');
+            inputs.forEach((input, idx) => {
+                input.removeEventListener('keyup', paramChangeHandler);
+                input.addEventListener('keyup', paramChangeHandler);
+            });
+
+            function paramChangeHandler(e) {
+                const val = e.target.value;
+                const paramId = e.target.id; // param1, param2, ...
+                if (!paramId.startsWith('param')) return;
+                const index = parseInt(paramId.replace('param', '')) - 1;
+
+                // afhankelijk van type wegschrijven in cache
+                if (formuleType === 'XLOOKUP' && paramCache.XLOOKUP) {
+                    const keys = ['lookup', 'array', 'retarray', 'nietgevonden'];
+                    if (index < keys.length) paramCache.XLOOKUP[keys[index]] = val;
+                } else if (formuleType === 'SUMIF' && paramCache.SUMIF) {
+                    const keys = ['range', 'criteria', 'sumrange'];
+                    if (index < keys.length) paramCache.SUMIF[keys[index]] = val;
+                } else if (formuleType === 'AVERAGEIF' && paramCache.AVERAGEIF) {
+                    const keys = ['range', 'criteria', 'avgrange'];
+                    if (index < keys.length) paramCache.AVERAGEIF[keys[index]] = val;
+                } else if (formuleType === 'INDEX' && paramCache.INDEX) {
+                    const keys = ['array', 'rij', 'kolom'];
+                    if (index < keys.length) paramCache.INDEX[keys[index]] = val;
+                } else if (formuleType === 'VLOOKUP' && paramCache.VLOOKUP) {
+                    const keys = ['lookup', 'tabel', 'kolomindex', 'bereikzoeken'];
+                    if (index < keys.length) paramCache.VLOOKUP[keys[index]] = val;
+                }
+                genereerFormuleTekst();
+            }
+        }
+
+        // ** formule genereren op basis van geselecteerde formules en parameters **
+        function genereerFormuleTekst() {
+            updateDoelCel();
+            const selected = Array.from(geselecteerdeFormules);
+            if (selected.length === 0) {
+                formuleUitvoerCode.textContent = '=   selecteer een formule';
+                return;
+            }
+
+            // bouw de (geneste) formule: eenvoudig voorbeeld: hoofdformule = eerst gekozen + vul parameters
+            // voor nu: neem eerste formule en toon in Excel-stijl; uitbreidbaar naar nesting
+            const primary = selected[0];
+            let formuleLichaam = '';
+
+            if (primary === 'XLOOKUP') {
+                const p = paramCache.XLOOKUP;
+                const sortMode = p.sortmode || '1';
+                formuleLichaam = `XLOOKUP(${p.lookup}; ${p.array}; ${p.retarray}; ${p.nietgevonden}; ${sortMode})`;
+            } else if (primary === 'SUMIF') {
+                const p = paramCache.SUMIF;
+                formuleLichaam = `SOM.ALS(${p.range}; ${p.criteria}; ${p.sumrange})`;
+            } else if (primary === 'AVERAGEIF') {
+                const p = paramCache.AVERAGEIF;
+                formuleLichaam = `GEMIDDELDE.ALS(${p.range}; ${p.criteria}; ${p.avgrange})`;
+            } else if (primary === 'INDEX') {
+                const p = paramCache.INDEX;
+                formuleLichaam = `INDEX(${p.array}; ${p.rij}; ${p.kolom})`;
+            } else if (primary === 'VLOOKUP') {
+                const p = paramCache.VLOOKUP;
+                formuleLichaam = `VERT.ZOEKEN(${p.lookup}; ${p.tabel}; ${p.kolomindex}; ${p.bereikzoeken})`;
+            } else {
+                formuleLichaam = 'ONBEKENDE_FORMULE()';
+            }
+
+            formuleUitvoerCode.textContent = `=${formuleLichaam}`;
+        }
+
+        // ** event listeners voor checkboxes **
+        formuleCheckboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                updateSetFromCheckboxes();
+                renderParameters();         // toon parameters van eerste gekozen formule
+                genereerFormuleTekst();
+            });
+        });
+
+        // knop "voeg parameterblok toe" doet eigenlijk alleen opslaan en genereer opnieuw (kan ook als bevestiging voelen)
+        voegToeKnop.addEventListener('click', function(e) {
+            e.preventDefault();
+            // forceer dat huidige invoer wordt opgeslagen in cache via de attach listeners al, maar we triggeren herlezing:
+            const first = Array.from(geselecteerdeFormules)[0];
+            if (first) {
+                // werk handmatig nogmaals bij via inputs (voor de zekerheid)
+                const inputs = document.querySelectorAll('#paramBlokDynamisch input[type="text"]');
+                if (first === 'XLOOKUP' && paramCache.XLOOKUP) {
+                    const keys = ['lookup', 'array', 'retarray', 'nietgevonden'];
+                    inputs.forEach((inp, idx) => { if (idx<keys.length) paramCache.XLOOKUP[keys[idx]] = inp.value; });
+                    // radio's apart voor sortmode
+                    const sortRadio = document.querySelector('input[name="xlookupSort"]:checked');
+                    if (sortRadio) paramCache.XLOOKUP.sortmode = sortRadio.value;
+                }
+                /* andere formules soortgelijk (voor demo al via keyup bijgewerkt) */
+            }
+            genereerFormuleTekst();
+        });
+
+        // doelcel wijzigen
+        doelCelInput.addEventListener('input', function() {
+            genereerFormuleTekst();
+        });
+
+        // initialisatie
+        updateSetFromCheckboxes();    // Set vullen op basis van initieel checked (XLOOKUP)
+        renderParameters();           // toon XLOOKUP velden
+        genereerFormuleTekst();       // zet initiële formule =XLOOKUP(...)
+
+        // extra: als gebruiker handmatig cel verandert via parameter.
+        window.addEventListener('load', function() {
+            // radio reeds attach in render, maar roep nog een update voor cache
+        });
+    })();
+</script>
+
+<!-- kleine aanpassing voor VERT.ZOEKEN parameter cache -->
+</body>
+</html>
