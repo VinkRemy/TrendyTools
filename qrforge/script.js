@@ -1,21 +1,5 @@
-    Promise.all([
-        fetch('../header.html').then(res => {
-            if (!res.ok) throw new Error('Header not found');
-            return res.text();
-        }),
-        fetch('../footer.html').then(res => {
-            if (!res.ok) throw new Error('Footer not found');
-            return res.text();
-        })
-    ]).then(([headerHtml, footerHtml]) => {
-        document.getElementById('header-placeholder').innerHTML = headerHtml;
-        document.getElementById('footer-placeholder').innerHTML = footerHtml;
-        initQR();
-    }).catch(error => {
-        console.error('Error loading header/footer:', error);
-        document.getElementById('header-placeholder').innerHTML = '<p style="color:red; padding:1rem;">⚠️ Header kon niet worden geladen. Controleer of header.html in de hoofdmap staat.</p>';
-        document.getElementById('footer-placeholder').innerHTML = '<p style="color:red; padding:1rem;">⚠️ Footer kon niet worden geladen.</p>';
-    });
+    document.getElementById('header-placeholder').innerHTML = window.headerHtml;
+    document.getElementById('footer-placeholder').innerHTML = window.footerHtml;
     
     let qr;
     
