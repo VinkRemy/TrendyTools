@@ -47,7 +47,7 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 1.5rem;
+            gap: 1rem;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -92,6 +92,13 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .header-nav-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
         }
 
         nav {
@@ -592,18 +599,25 @@
             header {
                 position: relative;
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
                 padding: 1rem;
             }
             
-            nav {
-                flex-wrap: wrap;
+            .header-nav-wrapper {
+                flex-direction: column;
+                align-items: stretch;
                 gap: 1rem;
+                width: 100%;
+            }
+            
+            nav {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 1.2rem;
             }
             
             .header-right {
-                width: 100%;
-                justify-content: flex-start;
+                justify-content: center;
                 gap: 1rem;
             }
             
@@ -761,20 +775,22 @@
             <div class="logo-icon"><i class="fas fa-compass"></i></div>
             <div class="logo-text">Trendy<span>Tools</span>.net</div>
         </div>
-        <nav>
-            <a href="#trending">Trending</a>
-            <a href="#all-tools-section">All tools</a>
-            <a href="#why-choose">Why us</a>
-        </nav>
-        <div class="header-right">
-            <button id="bookmarkBtn" class="bookmark-btn" onclick="bookmarkPage()">
-                <i class="far fa-bookmark"></i>
-                <span class="btn-text">Bookmark</span>
-            </button>
-            <button id="donateBtn" class="donate-btn" onclick="window.open('https://www.paypal.com/donate', '_blank');">
-                <i class="fas fa-heart" style="color: #ff6b6b;"></i>
-                <span class="btn-text">Donate</span>
-            </button>
+        <div class="header-nav-wrapper">
+            <nav>
+                <a href="#trending">Trending</a>
+                <a href="#all-tools-section">All tools</a>
+                <a href="#why-choose">Why us</a>
+            </nav>
+            <div class="header-right">
+                <button id="bookmarkBtn" class="bookmark-btn" onclick="bookmarkPage()">
+                    <i class="far fa-bookmark"></i>
+                    <span class="btn-text">Bookmark</span>
+                </button>
+                <button id="donateBtn" class="donate-btn" onclick="window.open('https://www.paypal.com/donate', '_blank');">
+                    <i class="fas fa-heart" style="color: #ff6b6b;"></i>
+                    <span class="btn-text">Donate</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -912,21 +928,52 @@
 </footer>
 
 <script>
-    // Bookmark functie
+    // Echte bookmark functie - opent browser bookmark dialog
     function bookmarkPage() {
-        const currentUrl = window.location.href;
-        const pageTitle = document.title;
+        const url = window.location.href;
+        const title = document.title;
         
         if (window.sidebar && window.sidebar.addPanel) {
             // Firefox
-            window.sidebar.addPanel(pageTitle, currentUrl, '');
+            window.sidebar.addPanel(title, url, '');
         } else if (window.external && ('AddFavorite' in window.external)) {
             // Internet Explorer
-            window.external.AddFavorite(currentUrl, pageTitle);
+            window.external.AddFavorite(url, title);
+        } else if (window.navigator && window.navigator.share) {
+            // Mobile share (optional)
+            window.navigator.share({
+                title: title,
+                url: url
+            }).catch(() => {
+                fallbackBookmark();
+            });
         } else {
-            // Chrome, Edge, Safari, etc.
-            alert('📖 Press Ctrl+D (or Cmd+D on Mac) to bookmark this page:\n\n' + currentUrl);
+            fallbackBookmark();
         }
+    }
+    
+    function fallbackBookmark() {
+        const url = window.location.href;
+        const title = document.title;
+        
+        // Try to open native bookmark dialog via prompt
+        if (window.external && ('AddFavorite' in window.external) === false) {
+            // Chrome, Edge, etc - show instruction
+            const message = `🌟 Bookmark this page:\n\n1. Press Ctrl+D (or Cmd+D on Mac)\n2. Click "Done" or "Add"\n\nOr drag this link to your bookmarks bar:\n${url}`;
+            alert(message);
+        } else {
+            alert(`📖 Press Ctrl+D (or Cmd+D on Mac) to bookmark:\n\n${title}\n${url}`);
+        }
+    }
+    
+    // Voeg ook een alternatief toe via een link element (voor sommige browsers)
+    const bookmarkBtn = document.getElementById('bookmarkBtn');
+    if (bookmarkBtn) {
+        // Soms kan een link met rel="sidebar" helpen
+        const bookmarkLink = document.createElement('a');
+        bookmarkLink.rel = 'sidebar';
+        bookmarkLink.href = window.location.href;
+        bookmarkLink.title = document.title;
     }
 
     (function() {
