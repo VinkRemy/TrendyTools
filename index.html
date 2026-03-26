@@ -135,7 +135,8 @@
             align-items: center;
         }
 
-        .header-right button {
+        /* Bookmark en Donate knoppen */
+        .bookmark-btn, .donate-btn {
             background: transparent;
             border: 1px solid #cbdde9;
             padding: 0.5rem 1.3rem;
@@ -147,11 +148,15 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .header-right button:hover {
+        .bookmark-btn:hover, .donate-btn:hover {
             background: #1e4b6e;
             color: white;
             border-color: #1e4b6e;
             transform: translateY(-2px);
+        }
+
+        .bookmark-btn:hover i, .donate-btn:hover i {
+            color: white;
         }
 
         /* ========== PAGE TITLE ========== */
@@ -177,7 +182,7 @@
             max-width: 600px;
         }
 
-        /* ========== SECTION FADE-IN ON SCROLL - IMPROVED ========== */
+        /* ========== SECTION FADE-IN ON SCROLL ========== */
         .fade-on-scroll {
             opacity: 0;
             transform: translateY(40px);
@@ -190,7 +195,7 @@
             transform: translateY(0);
         }
 
-        /* Stagger effect for cards - each card fades in with slight delay */
+        /* Stagger effect for cards */
         .trending-grid .tool-card, .all-tools-grid .tool-card {
             opacity: 0;
             transform: translateY(30px);
@@ -311,7 +316,7 @@
             transform: scale(1.05);
         }
 
-        /* ========== WHY CHOOSE US SECTION - 5 COLUMNS SIDE BY SIDE ========== */
+        /* ========== WHY CHOOSE US SECTION ========== */
         .why-choose-us {
             background: linear-gradient(115deg, #ffffff 0%, #f9fcff 100%);
             border-radius: 48px;
@@ -551,10 +556,10 @@
             font-size: 0.85rem;
         }
 
-        /* Zorg dat scrollen naar secties niet achter de header verdwijnt */
-#trending, #why-choose, #all-tools-section {
-    scroll-margin-top: 90px; /* Hoogte van je header + wat marge */
-}
+        /* Scroll offset */
+        #trending, #why-choose, #all-tools-section {
+            scroll-margin-top: 90px;
+        }
 
         @keyframes fadeInUp {
             from {
@@ -567,7 +572,7 @@
             }
         }
 
-                /* ========== RESPONSIVE ========== */
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 1100px) {
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -598,12 +603,22 @@
             
             .header-right {
                 width: 100%;
-                justify-content: space-between;
+                justify-content: flex-start;
+                gap: 1rem;
             }
             
-            .header-right button {
-                padding: 0.4rem 1rem;
-                font-size: 0.85rem;
+            /* Mobiel: alleen icons tonen op knoppen */
+            .btn-text {
+                display: none;
+            }
+            
+            .bookmark-btn, .donate-btn {
+                padding: 0.5rem 1rem;
+            }
+            
+            .bookmark-btn i, .donate-btn i {
+                font-size: 1.2rem;
+                margin: 0;
             }
             
             .page-title h1 {
@@ -747,14 +762,19 @@
             <div class="logo-text">Trendy<span>Tools</span>.net</div>
         </div>
         <nav>
-            <a href="#">Home</a>
             <a href="#trending">Trending</a>
             <a href="#all-tools-section">All tools</a>
             <a href="#why-choose">Why us</a>
         </nav>
         <div class="header-right">
-            <button><i class="far fa-bookmark"></i> Bookmarks</button>
-            <button><i class="fas fa-user"></i> Profile</button>
+            <button id="bookmarkBtn" class="bookmark-btn" onclick="bookmarkPage()">
+                <i class="far fa-bookmark"></i>
+                <span class="btn-text">Bookmark</span>
+            </button>
+            <button id="donateBtn" class="donate-btn" onclick="window.open('https://www.paypal.com/donate', '_blank');">
+                <i class="fas fa-heart" style="color: #ff6b6b;"></i>
+                <span class="btn-text">Donate</span>
+            </button>
         </div>
     </header>
 
@@ -796,7 +816,7 @@
         </div>
     </div>
 
-    <!-- WHY CHOOSE US? SECTION — 5 cards side by side (desktop) -->
+    <!-- WHY CHOOSE US? SECTION -->
     <div id="why-choose" class="why-choose-us fade-on-scroll">
         <div class="why-header">
             <h2>Why choose us?</h2>
@@ -892,8 +912,25 @@
 </footer>
 
 <script>
+    // Bookmark functie
+    function bookmarkPage() {
+        const currentUrl = window.location.href;
+        const pageTitle = document.title;
+        
+        if (window.sidebar && window.sidebar.addPanel) {
+            // Firefox
+            window.sidebar.addPanel(pageTitle, currentUrl, '');
+        } else if (window.external && ('AddFavorite' in window.external)) {
+            // Internet Explorer
+            window.external.AddFavorite(currentUrl, pageTitle);
+        } else {
+            // Chrome, Edge, Safari, etc.
+            alert('📖 Press Ctrl+D (or Cmd+D on Mac) to bookmark this page:\n\n' + currentUrl);
+        }
+    }
+
     (function() {
-        // Tools dataset — using reliable Font Awesome 6 icons
+        // Tools dataset
         const toolsData = [
             { name: "Creativize", icon: "fa-palette", desc: "AI image studio", category: "design" },
             { name: "GrowthDash", icon: "fa-chart-column", desc: "social analytics", category: "marketing" },
@@ -912,7 +949,6 @@
         const allToolsGrid = document.getElementById('allToolsGrid');
         const searchInput = document.getElementById('toolSearch');
 
-        // Add index for stagger effect
         function renderTools(filter = '') {
             const lowerFilter = filter.toLowerCase().trim();
             let html = '';
@@ -941,29 +977,23 @@
         renderTools();
         searchInput.addEventListener('input', (e) => renderTools(e.target.value));
 
-        // Intersection Observer for fade-on-scroll - IMPROVED: appears earlier
+        // Intersection Observer for fade-on-scroll
         const fadeElements = document.querySelectorAll('.fade-on-scroll');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    // Keep observing for the grid children stagger effect
-                    if (entry.target.classList.contains('trending-grid') || entry.target.classList.contains('all-tools-grid')) {
-                        // already visible
-                    }
                 }
             });
-        }, { threshold: 0.15, rootMargin: "0px 0px -20px 0px" }); // Lower threshold = earlier trigger
+        }, { threshold: 0.15, rootMargin: "0px 0px -20px 0px" });
         
         fadeElements.forEach(el => observer.observe(el));
         
-        // Also observe the trending grid and all tools grid for children
         const grids = document.querySelectorAll('.trending-grid, .all-tools-grid');
         grids.forEach(grid => {
             observer.observe(grid);
         });
         
-        // Initial check for elements already visible
         setTimeout(() => {
             fadeElements.forEach(el => {
                 const rect = el.getBoundingClientRect();
