@@ -4,26 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrendyTools.net – Find your next favorite tool</title>
-    <!-- Font Awesome 6 (free icons for search and atmosphere) -->
+    <!-- Font Awesome 6 (free icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicoon.png">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background-color: #f4f7fc;
-            color: #1e2b3c;
+            background: linear-gradient(135deg, #f8fafc 0%, #eff3f8 100%);
+            color: #0a2540;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             line-height: 1.5;
-            display: flex;
-            flex-direction: column;
             min-height: 100vh;
         }
 
-        /* main grid: header, main, footer */
+        html {
+            scroll-behavior: smooth;
+        }
+
         .wrapper {
             max-width: 1400px;
             margin: 0 auto;
@@ -31,49 +35,60 @@
             width: 100%;
         }
 
-        /* header */
+        /* ========== HEADER ========== */
         header {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 0 0 2rem 2rem;
-            box-shadow: 0 10px 30px -10px rgba(0,20,30,0.1);
-            padding: 1.2rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 0 rgba(0, 0, 0, 0.02);
+            padding: 1rem 2rem;
             margin-bottom: 2.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
         }
 
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .logo-area:hover {
+            transform: scale(1.02);
         }
 
         .logo-icon {
-            background: #1e2b3c;
+            background: linear-gradient(145deg, #0f2b3d, #1a4b6e);
             color: white;
-            width: 45px;
-            height: 45px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 16px;
+            border-radius: 18px;
             font-size: 1.8rem;
-            transform: rotate(5deg);
-            transition: 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px -8px rgba(26, 75, 110, 0.3);
         }
 
         .logo-text {
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: -0.02em;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .logo-text span {
-            color: #2b6c9e;
-            background: linear-gradient(145deg, #1e4b6e, #2b6c9e);
+            background: linear-gradient(135deg, #1e6f9f, #0f3b55);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -81,171 +96,333 @@
 
         nav {
             display: flex;
-            gap: 2.5rem;
+            gap: 2rem;
             font-weight: 500;
         }
 
         nav a {
             text-decoration: none;
-            color: #2f4052;
-            transition: color 0.2s;
-            font-size: 1.1rem;
+            color: #2c4c6e;
+            transition: all 0.2s;
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #1e6f9f, #3b8fc2);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        nav a:hover::after {
+            width: 100%;
         }
 
         nav a:hover {
-            color: #2b6c9e;
+            color: #1e6f9f;
         }
 
         .header-right {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             align-items: center;
         }
 
         .header-right button {
-            background: none;
-            border: 1px solid #cddae9;
-            padding: 0.5rem 1.2rem;
+            background: transparent;
+            border: 1px solid #cbdde9;
+            padding: 0.5rem 1.3rem;
             border-radius: 40px;
             font-weight: 500;
-            color: #1e2b3c;
+            color: #1e4b6e;
             cursor: pointer;
-            transition: all 0.15s;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
         }
 
         .header-right button:hover {
-            background: #1e2b3c;
+            background: #1e4b6e;
             color: white;
-            border-color: #1e2b3c;
+            border-color: #1e4b6e;
+            transform: translateY(-2px);
         }
 
-        /* page title */
+        /* ========== PAGE TITLE ========== */
         .page-title {
             margin: 1rem 0 2rem 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
         }
 
         .page-title h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(to right, #1d3b5c, #2b6c9e);
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1a4b6e, #2c7cb0);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .page-title p {
-            color: #4f6579;
+            color: #5a6e7e;
             font-size: 1.2rem;
-            margin-top: 0.3rem;
+            margin-top: 0.5rem;
+            max-width: 600px;
         }
 
-        /* Trending section */
+        /* ========== SECTION FADE-IN ON SCROLL - IMPROVED ========== */
+        .fade-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            will-change: opacity, transform;
+        }
+
+        .fade-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger effect for cards - each card fades in with slight delay */
+        .trending-grid .tool-card, .all-tools-grid .tool-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.5s ease, box-shadow 0.3s ease;
+        }
+
+        .trending-grid.visible .tool-card, .all-tools-grid.visible .tool-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger delay for cards */
+        .trending-grid.visible .tool-card:nth-child(1) { transition-delay: 0.05s; }
+        .trending-grid.visible .tool-card:nth-child(2) { transition-delay: 0.15s; }
+        .trending-grid.visible .tool-card:nth-child(3) { transition-delay: 0.25s; }
+        .trending-grid.visible .tool-card:nth-child(4) { transition-delay: 0.35s; }
+
+        /* ========== TRENDING SECTION ========== */
         .section-label {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin: 2.5rem 0 1.5rem 0;
+            gap: 0.75rem;
+            margin: 2.5rem 0 1.8rem 0;
         }
 
         .section-label i {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: #e67e22;
-            background: #fff1e5;
-            padding: 0.5rem;
-            border-radius: 18px;
+            background: #fff0e4;
+            padding: 0.6rem;
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .section-label.visible i {
+            transform: scale(1.05);
         }
 
         .section-label h2 {
             font-size: 2rem;
-            font-weight: 650;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .trending-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1.8rem;
             margin-top: 1rem;
         }
 
-        /* card / square base */
         .tool-card {
             background: white;
-            border-radius: 28px;
-            padding: 2rem 1rem 1.5rem 1rem;
-            box-shadow: 0 15px 30px -12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, box-shadow 0.25s;
+            border-radius: 32px;
+            padding: 2rem 1rem 1.8rem;
+            box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.02);
-            aspect-ratio: 1 / 1;   /* square */
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            aspect-ratio: 1 / 1;
             width: 100%;
         }
 
         .tool-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 40px -12px rgba(27, 55, 96, 0.25);
-            border-color: #cbddea;
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 28px 40px -16px rgba(26, 75, 110, 0.25);
+            border-color: #d9e6f2;
         }
 
-        /* image inside circle / square */
         .card-image {
-            width: 90px;
-            height: 90px;
-            background: #eef2f6;
-            border-radius: 28px;
+            width: 96px;
+            height: 96px;
+            background: #f0f4f9;
+            border-radius: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 1.2rem;
             font-size: 2.8rem;
-            color: #2b4f73;
-            transition: background 0.2s;
-            box-shadow: 0 5px 11px rgba(0,0,0,0.02);
+            color: #2b6c9e;
+            transition: all 0.3s;
         }
 
         .tool-card:hover .card-image {
-            background: #dee9f2;
+            background: #e6f0f8;
+            transform: scale(1.05);
         }
 
         .tool-card h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
+            font-size: 1.35rem;
+            font-weight: 700;
             margin-bottom: 0.3rem;
         }
 
         .tool-card p {
-            color: #5e6f82;
+            color: #6c7e8f;
             font-size: 0.85rem;
-            max-width: 130px;
+            max-width: 140px;
         }
 
-        /* trending badge */
         .trend-badge {
             background: #ffe6d5;
-            color: #b95b0e;
+            color: #c45d1a;
             font-size: 0.7rem;
             font-weight: 700;
-            padding: 0.2rem 1rem;
-            border-radius: 30px;
-            margin-top: 0.4rem;
+            padding: 0.25rem 1rem;
+            border-radius: 40px;
+            margin-top: 0.6rem;
             letter-spacing: 0.3px;
+            transition: transform 0.2s ease;
         }
 
-        /* All tools section with search bar */
+        .tool-card:hover .trend-badge {
+            transform: scale(1.05);
+        }
+
+        /* ========== WHY CHOOSE US SECTION - 5 COLUMNS SIDE BY SIDE ========== */
+        .why-choose-us {
+            background: linear-gradient(115deg, #ffffff 0%, #f9fcff 100%);
+            border-radius: 48px;
+            padding: 3rem 2rem;
+            margin: 4rem 0;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(59, 143, 194, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .why-choose-us.visible {
+            box-shadow: 0 20px 40px -12px rgba(26, 75, 110, 0.15);
+        }
+
+        .why-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .why-header h2 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #1a4b6e, #3182ae);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .why-header p {
+            color: #5e7385;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: 28px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid #eef3fc;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .why-choose-us.visible .feature-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .why-choose-us.visible .feature-item:nth-child(1) { transition-delay: 0.05s; }
+        .why-choose-us.visible .feature-item:nth-child(2) { transition-delay: 0.12s; }
+        .why-choose-us.visible .feature-item:nth-child(3) { transition-delay: 0.19s; }
+        .why-choose-us.visible .feature-item:nth-child(4) { transition-delay: 0.26s; }
+        .why-choose-us.visible .feature-item:nth-child(5) { transition-delay: 0.33s; }
+
+        .feature-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+            border-color: #cde3f2;
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: #eef3fc;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem;
+            font-size: 2rem;
+            color: #2b6c9e;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover .feature-icon {
+            transform: scale(1.08);
+        }
+
+        .feature-item h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        .feature-item p {
+            color: #6b7f90;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* ========== ALL TOOLS ========== */
         .all-tools-header {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            margin: 3rem 0 1.5rem 0;
+            margin: 2.5rem 0 1.8rem;
         }
 
         .all-tools-header h2 {
             font-size: 2rem;
-            font-weight: 650;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -253,43 +430,60 @@
 
         .search-box {
             background: white;
-            padding: 0.4rem 1rem 0.4rem 1.5rem;
+            padding: 0.3rem 0.3rem 0.3rem 1.5rem;
             border-radius: 60px;
             display: flex;
             align-items: center;
-            box-shadow: 0 8px 18px -10px #afc2d4;
-            border: 1px solid #cfdeed;
-            min-width: 260px;
+            box-shadow: 0 8px 20px -12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2edf5;
+            min-width: 280px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: #2b6c9e;
+            box-shadow: 0 8px 22px -12px #2b6c9e40;
+            transform: scale(1.01);
         }
 
         .search-box i {
-            color: #8ca3b9;
-            font-size: 1.1rem;
+            color: #8ea2b5;
+            transition: color 0.2s;
+        }
+
+        .search-box:focus-within i {
+            color: #2b6c9e;
         }
 
         .search-box input {
             border: none;
-            padding: 0.7rem 0.8rem;
+            padding: 0.8rem 0.8rem;
             font-size: 1rem;
             background: transparent;
             outline: none;
             width: 100%;
+            font-family: 'Inter', sans-serif;
         }
 
         .all-tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 1.8rem;
             margin: 2rem 0 3rem;
         }
 
-        /* footer */
+        /* ========== FOOTER ========== */
         footer {
-            background: #13212e;
-            color: #d0e0ef;
-            padding: 2.5rem 2rem 1.5rem;
+            background: #0a1c2a;
+            color: #caddf0;
+            padding: 3rem 2rem 1.8rem;
             border-radius: 3rem 3rem 0 0;
-            margin-top: 3rem;
+            margin-top: 4rem;
+            transition: all 0.4s ease;
+        }
+
+        footer.visible {
+            transform: translateY(0);
         }
 
         .footer-content {
@@ -301,14 +495,10 @@
             gap: 2.5rem;
         }
 
-        .footer-col {
-            flex: 1 1 220px;
-        }
-
         .footer-col h4 {
             color: white;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
         }
 
@@ -318,10 +508,15 @@
 
         .footer-col li {
             margin-bottom: 0.7rem;
+            transition: transform 0.2s ease;
+        }
+
+        .footer-col li:hover {
+            transform: translateX(4px);
         }
 
         .footer-col a {
-            color: #b0c9df;
+            color: #adc6de;
             text-decoration: none;
             transition: color 0.2s;
         }
@@ -333,224 +528,318 @@
         .social-icons {
             display: flex;
             gap: 1.2rem;
-            margin-top: 1rem;
-            font-size: 1.5rem;
+            margin-top: 0.8rem;
+            font-size: 1.4rem;
+        }
+
+        .social-icons a {
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .social-icons a:hover {
+            transform: translateY(-3px) scale(1.1);
+            color: white;
         }
 
         .copyright {
             text-align: center;
-            padding-top: 2.5rem;
+            padding-top: 2rem;
             margin-top: 2rem;
-            border-top: 1px solid #253f52;
-            color: #8fa5b9;
-            font-size: 0.9rem;
+            border-top: 1px solid #1e3a4f;
+            color: #87a2bb;
+            font-size: 0.85rem;
         }
 
-        /* search utility class */
-        .hidden-tool {
-            display: none;
+        /* Zorg dat scrollen naar secties niet achter de header verdwijnt */
+#trending, #why-choose, #all-tools-section {
+    scroll-margin-top: 90px; /* Hoogte van je header + wat marge */
+}
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* mobile-friendly */
-        @media (max-width: 640px) {
+        /* Responsive: 5 columns become 2 on tablet, 1 on mobile */
+        @media (max-width: 1100px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+            }
+        }
+
+        @media (max-width: 720px) {
             .wrapper {
                 padding: 0 1.2rem;
             }
             header {
                 flex-direction: column;
-                align-items: start;
+                align-items: flex-start;
             }
             .trending-grid, .all-tools-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            .page-title h1 {
+                font-size: 2rem;
+            }
+            .why-header h2 {
+                font-size: 1.8rem;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <!-- HEADER -->
-        <header>
-            <div class="logo-area">
-                <div class="logo-icon"><i class="fas fa-wrench"></i></div>
-                <div class="logo-text">Trendy<span>Tools</span>.net</div>
-            </div>
-            <nav>
-                <a href="#">Home</a>
-                <a href="#">Trending</a>
-                <a href="#">All tools</a>
-                <a href="#">Blog</a>
-            </nav>
-            <div class="header-right">
-                <button><i class="far fa-bookmark" style="margin-right: 6px;"></i>Bookmarks</button>
-                <button><i class="fas fa-user"></i> Profile</button>
-            </div>
-        </header>
 
-        <!-- Page intro -->
-        <div class="page-title">
-            <h1>Tools that matter</h1>
-            <p>Discover the most practical and trendy tools for creators, marketers, and developers.</p>
+<div class="wrapper">
+    <!-- HEADER -->
+    <header>
+        <div class="logo-area" onclick="location.href='#';">
+            <div class="logo-icon"><i class="fas fa-compass"></i></div>
+            <div class="logo-text">Trendy<span>Tools</span>.net</div>
         </div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#trending">Trending</a>
+            <a href="#all-tools-section">All tools</a>
+            <a href="#why-choose">Why us</a>
+        </nav>
+        <div class="header-right">
+            <button><i class="far fa-bookmark"></i> Bookmarks</button>
+            <button><i class="fas fa-user"></i> Profile</button>
+        </div>
+    </header>
 
-        <!-- TRENDING TOOLS (square + image) -->
-        <div class="section-label">
-            <i class="fas fa-fire-flame"></i>
-            <h2>Trending tools</h2>
-        </div>
-        <div class="trending-grid" id="trendingGrid">
-            <!-- tool 1 -->
-            <div class="tool-card" onclick="location.href='trianglelator';">
-                <div class="card-image"><i class="fas fa-ruler-combined"></i></div>
-                <h3>Trianglelator</h3>
-                <p>Triangle calculater</p>
-                <span class="trend-badge">+125%</span>
-            </div>
-            <!-- tool 2 -->
-            <div class="tool-card" onclick="location.href='magicrebus';">
-                <div class="card-image"><i class="fas fa-brain"></i></div>
-                <h3>MagicRebus</h3>
-                <p>Rebus generator</p>
-                <span class="trend-badge">+86%</span>
-            </div>
-            <!-- tool 3 -->
-            <div class="tool-card" onclick="location.href='geomarker';">
-                <div class="card-image"><i class="fas fa-map"></i></div>
-                <h3>GeoMarker</h3>
-                <p>Create interactive maps</p>
-                <span class="trend-badge">+43%</span>
-            </div>
-            <!-- tool 4 -->
-            <div class="tool-card" onclick="location.href='qrforge';">
-                <div class="card-image"><i class="fas fa-qrcode"></i></div>
-                <h3>QR Forge</h3>
-                <p>QR code generator</p>
-                <span class="trend-badge">+67%</span>
-            </div>
-        </div>
+    <!-- Page intro -->
+    <div class="page-title">
+        <h1>Tools that matter</h1>
+        <p>Discover the most practical and trendy tools for creators, marketers, and developers. All free, frontend-first, and privacy-focused.</p>
+    </div>
 
-        <!-- ALL TOOLS + SEARCH BY NAME -->
-        <div class="all-tools-header">
-            <h2><i class="fas fa-cubes" style="color: #1e4b6e;"></i> All tools</h2>
+    <!-- TRENDING TOOLS SECTION -->
+    <div id="trending" class="section-label fade-on-scroll">
+        <i class="fas fa-fire-flame-curved"></i>
+        <h2>Trendy</h2>
+    </div>
+    <div class="trending-grid fade-on-scroll" id="trendingGrid">
+        <div class="tool-card" onclick="location.href='trianglelator';">
+            <div class="card-image"><i class="fas fa-ruler-combined"></i></div>
+            <h3>Trianglelator</h3>
+            <p>Triangle calculator</p>
+            <span class="trend-badge">+125%</span>
+        </div>
+        <div class="tool-card" onclick="location.href='magicrebus';">
+            <div class="card-image"><i class="fas fa-brain"></i></div>
+            <h3>MagicRebus</h3>
+            <p>Rebus generator</p>
+            <span class="trend-badge">+86%</span>
+        </div>
+        <div class="tool-card" onclick="location.href='geomarker';">
+            <div class="card-image"><i class="fas fa-map"></i></div>
+            <h3>GeoMarker</h3>
+            <p>Interactive maps</p>
+            <span class="trend-badge">+43%</span>
+        </div>
+        <div class="tool-card" onclick="location.href='qrforge';">
+            <div class="card-image"><i class="fas fa-qrcode"></i></div>
+            <h3>QR Forge</h3>
+            <p>QR code generator</p>
+            <span class="trend-badge">+67%</span>
+        </div>
+    </div>
+
+    <!-- WHY CHOOSE US? SECTION — 5 cards side by side (desktop) -->
+    <div id="why-choose" class="why-choose-us fade-on-scroll">
+        <div class="why-header">
+            <h2>Why choose us?</h2>
+            <p>We're redefining the tool ecosystem with simplicity, ethics & performance.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-laptop-code"></i></div>
+                <h3>100% Frontend</h3>
+                <p>Everything runs locally in your browser. No servers, no uploads, total privacy.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-gem"></i></div>
+                <h3>Completely Free</h3>
+                <p>No hidden fees, no premium walls. Just tools that empower your workflow.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-ad"></i></div>
+                <h3>Zero Ads</h3>
+                <p>Enjoy a clean, distraction-free experience. No banners, no popups, no tracking.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                <h3>Privacy First</h3>
+                <p>Your data never leaves your device. No analytics, no third-party scripts.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fab fa-github"></i></div>
+                <h3>Open Source</h3>
+                <p>MIT licensed, transparent code. Contribute, fork, or simply trust the process.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALL TOOLS + SEARCH -->
+    <div id="all-tools-section">
+        <div class="all-tools-header fade-on-scroll">
+            <h2><i class="fas fa-cubes"></i> All tools</h2>
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="toolSearch" placeholder="Search by name... (e.g. writer)" autocomplete="off">
+                <input type="text" id="toolSearch" placeholder="Search by name... e.g. 'WriterGen'" autocomplete="off">
             </div>
         </div>
-
-        <!-- dynamic grid with all tools (clickable squares) -->
-        <div class="all-tools-grid" id="allToolsGrid">
-            <!-- Populated via JavaScript -->
+        <div class="all-tools-grid fade-on-scroll" id="allToolsGrid">
+            <!-- loaded dynamically -->
         </div>
-    </div> <!-- end wrapper -->
+    </div>
+</div>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-col">
-                <h4>TrendyTools.net</h4>
-                <ul>
-                    <li><a href="#">About us</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Advertise</a></li>
-                    <li><a href="#">Privacy</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Top categories</h4>
-                <ul>
-                    <li><a href="#">AI & text</a></li>
-                    <li><a href="#">Design</a></li>
-                    <li><a href="#">Social media</a></li>
-                    <li><a href="#">Productivity</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Community</h4>
-                <ul>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Roadmap</a></li>
-                    <li><a href="#">Submit a tool</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Follow us</h4>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                    <a href="#"><i class="fab fa-github"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-                <p style="margin-top: 1.2rem; font-size: 0.9rem;">Get monthly tool updates</p>
-            </div>
+<!-- FOOTER -->
+<footer class="fade-on-scroll">
+    <div class="footer-content">
+        <div class="footer-col">
+            <h4>TrendyTools.net</h4>
+            <ul>
+                <li><a href="#">About us</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Advertise</a></li>
+                <li><a href="#">Privacy</a></li>
+            </ul>
         </div>
-        <div class="copyright">
-            &copy; 2026 TrendyTools.net – All squares are clickable, including all tools.
+        <div class="footer-col">
+            <h4>Top categories</h4>
+            <ul>
+                <li><a href="#">AI & text</a></li>
+                <li><a href="#">Design</a></li>
+                <li><a href="#">Social media</a></li>
+                <li><a href="#">Productivity</a></li>
+            </ul>
         </div>
-    </footer>
+        <div class="footer-col">
+            <h4>Community</h4>
+            <ul>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Roadmap</a></li>
+                <li><a href="#">Submit a tool</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Follow us</h4>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-x-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.85rem;">✨ Get monthly tool updates</p>
+        </div>
+    </div>
+    <div class="copyright">
+        &copy; 2026 TrendyTools.net – Open source, frontend-first, zero ads & made with purpose. All tools are clickable.
+    </div>
+</footer>
 
-    <script>
-        (function() {
-            // ** Dataset for all tools (name, icon, description)
-            const toolsData = [
-                { name: "Creativize", icon: "fa-paint-brush", desc: "AI images", category: "design" },
-                { name: "GrowthDash", icon: "fa-chart-line", desc: "social media", category: "marketing" },
-                { name: "CodeSnap", icon: "fa-code", desc: "share snippets", category: "dev" },
-                { name: "ClipFusion", icon: "fa-video", desc: "video editing", category: "video" },
-                { name: "WriterGen", icon: "fa-feather", desc: "blog & copy", category: "text" },
-                { name: "FontSwift", icon: "fa-font", desc: "typo check", category: "design" },
-                { name: "MetricMuse", icon: "fa-magnifying-glass-chart", desc: "SEO analytics", category: "marketing" },
-                { name: "TaskPilot", icon: "fa-list-check", desc: "project planner", category: "productivity" },
-                { name: "MockupLab", icon: "fa-cube", desc: "3D mockups", category: "design" },
-                { name: "Shortzy", icon: "fa-link", desc: "link shortener", category: "utilities" },
-                { name: "ColorHarmony", icon: "fa-eye-dropper", desc: "color scheme", category: "design" },
-                { name: "PDFwizard", icon: "fa-file-pdf", desc: "edit PDF", category: "office" }
-            ];
+<script>
+    (function() {
+        // Tools dataset — using reliable Font Awesome 6 icons
+        const toolsData = [
+            { name: "Creativize", icon: "fa-palette", desc: "AI image studio", category: "design" },
+            { name: "GrowthDash", icon: "fa-chart-column", desc: "social analytics", category: "marketing" },
+            { name: "CodeSnap", icon: "fa-code", desc: "share snippets", category: "dev" },
+            { name: "ClipFusion", icon: "fa-film", desc: "video editing", category: "video" },
+            { name: "WriterGen", icon: "fa-pen-fancy", desc: "blog & copy", category: "text" },
+            { name: "FontSwift", icon: "fa-text-height", desc: "typography checker", category: "design" },
+            { name: "MetricMuse", icon: "fa-chart-line", desc: "SEO analytics", category: "marketing" },
+            { name: "TaskPilot", icon: "fa-tasks", desc: "project planner", category: "productivity" },
+            { name: "MockupLab", icon: "fa-cube", desc: "3D mockups", category: "design" },
+            { name: "Shortzy", icon: "fa-link", desc: "link shortener", category: "utilities" },
+            { name: "ColorHarmony", icon: "fa-fill-drip", desc: "color schemes", category: "design" },
+            { name: "PDFwizard", icon: "fa-file-pdf", desc: "edit PDF", category: "office" }
+        ];
 
-            // references
-            const allToolsGrid = document.getElementById('allToolsGrid');
-            const searchInput = document.getElementById('toolSearch');
+        const allToolsGrid = document.getElementById('allToolsGrid');
+        const searchInput = document.getElementById('toolSearch');
 
-            // function to render all tools (filtered by search term)
-            function renderTools(filterText = '') {
-                const filterLower = filterText.toLowerCase().trim();
-                let htmlString = '';
-
-                toolsData.forEach(tool => {
-                    // if filter is active and tool name does NOT contain the term -> skip
-                    if (filterLower !== '' && !tool.name.toLowerCase().includes(filterLower)) {
-                        return; // do not show this tool
-                    }
-
-                    // build a tool card
-                    htmlString += `
-                        <div class="tool-card" onclick="location.href='?tool=${encodeURIComponent(tool.name)}';" title="Click to open ${tool.name}">
-                            <div class="card-image"><i class="fas ${tool.icon}"></i></div>
-                            <h3>${tool.name}</h3>
-                            <p>${tool.desc}</p>
-                            <div style="height: 4px;"></div>
-                        </div>
-                    `;
-                });
-
-                // if no results
-                if (htmlString === '') {
-                    htmlString = `<div style="grid-column:1/-1; background: #ecf2f9; border-radius: 60px; padding: 3rem; text-align: center; color: #416480;"><i class="fas fa-face-frown" style="font-size: 2.5rem; margin-bottom: 1rem; display: block;"></i>No tools found for "<strong>${filterText}</strong>"</div>`;
-                }
-
-                allToolsGrid.innerHTML = htmlString;
-            }
-
-            // initial render (all tools)
-            renderTools();
-
-            // search event
-            searchInput.addEventListener('input', function(e) {
-                renderTools(e.target.value);
+        // Add index for stagger effect
+        function renderTools(filter = '') {
+            const lowerFilter = filter.toLowerCase().trim();
+            let html = '';
+            let index = 0;
+            toolsData.forEach(tool => {
+                if (lowerFilter && !tool.name.toLowerCase().includes(lowerFilter)) return;
+                html += `
+                    <div class="tool-card" style="--index: ${index}" onclick="location.href='?tool=${encodeURIComponent(tool.name)}';" title="Open ${tool.name}">
+                        <div class="card-image"><i class="fas ${tool.icon}"></i></div>
+                        <h3>${tool.name}</h3>
+                        <p>${tool.desc}</p>
+                        <div style="height: 4px;"></div>
+                    </div>
+                `;
+                index++;
             });
+            if (html === '') {
+                html = `<div style="grid-column:1/-1; background:#f2f6fb; border-radius: 48px; padding: 3rem; text-align:center; color:#3b6b8f;">
+                            <i class="fas fa-compass" style="font-size: 2.5rem; margin-bottom: 1rem; display:block;"></i>
+                            No tool found for "<strong>${filter}</strong>"
+                        </div>`;
+            }
+            allToolsGrid.innerHTML = html;
+        }
 
-            // Trending tools are static as designed, but could also be dynamic.
-            // They remain as hardcoded in HTML.
-        })();
-    </script>
+        renderTools();
+        searchInput.addEventListener('input', (e) => renderTools(e.target.value));
+
+        // Intersection Observer for fade-on-scroll - IMPROVED: appears earlier
+        const fadeElements = document.querySelectorAll('.fade-on-scroll');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Keep observing for the grid children stagger effect
+                    if (entry.target.classList.contains('trending-grid') || entry.target.classList.contains('all-tools-grid')) {
+                        // already visible
+                    }
+                }
+            });
+        }, { threshold: 0.15, rootMargin: "0px 0px -20px 0px" }); // Lower threshold = earlier trigger
+        
+        fadeElements.forEach(el => observer.observe(el));
+        
+        // Also observe the trending grid and all tools grid for children
+        const grids = document.querySelectorAll('.trending-grid, .all-tools-grid');
+        grids.forEach(grid => {
+            observer.observe(grid);
+        });
+        
+        // Initial check for elements already visible
+        setTimeout(() => {
+            fadeElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    el.classList.add('visible');
+                }
+            });
+            grids.forEach(grid => {
+                const rect = grid.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    grid.classList.add('visible');
+                }
+            });
+        }, 200);
+    })();
+</script>
 </body>
 </html>
