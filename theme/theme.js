@@ -72,64 +72,75 @@
     }
     
     // ========== DARK MODE FUNCTIE ==========
-    function toggleDarkMode() {
-        const body = document.body;
-        const darkModeBtn = document.getElementById('darkmodeBtn');
-        const isDark = body.classList.contains('dark');
-        
-        if (isDark) {
-            body.classList.remove('dark');
-            localStorage.setItem('darkMode', 'false');
-            darkModeBtn.innerHTML = '<i class="fas fa-moon"></i><span class="btn-text">Dark</span>';
-            showToast('Light mode activated ☀️', 'fa-sun');
-        } else {
-            body.classList.add('dark');
-            localStorage.setItem('darkMode', 'true');
-            darkModeBtn.innerHTML = '<i class="fas fa-sun"></i><span class="btn-text">Light</span>';
-            showToast('Dark mode activated 🌙', 'fa-moon');
-        }
-    }
+function toggleDarkMode() {
+    const body = document.body;
+    const darkModeBtn = document.getElementById('darkmodeBtn');
+    const isDark = body.classList.contains('dark');
     
-    // Laad dark mode voorkeur bij startup
-    function loadDarkModePreference() {
-        const savedDarkMode = localStorage.getItem('darkMode');
-        const darkModeBtn = document.getElementById('darkmodeBtn');
-        
-        if (savedDarkMode === 'true') {
-            document.body.classList.add('dark');
+    if (isDark) {
+        body.classList.remove('dark');
+        localStorage.setItem('darkMode', 'false');
+        if (darkModeBtn) {
+            darkModeBtn.innerHTML = '<i class="fas fa-moon"></i><span class="btn-text">Dark</span>';
+        }
+        showToast('Light mode activated ☀️', 'fa-sun');
+    } else {
+        body.classList.add('dark');
+        localStorage.setItem('darkMode', 'true');
+        if (darkModeBtn) {
             darkModeBtn.innerHTML = '<i class="fas fa-sun"></i><span class="btn-text">Light</span>';
-        } else {
-            document.body.classList.remove('dark');
+        }
+        showToast('Dark mode activated 🌙', 'fa-moon');
+    }
+}
+
+// Laad dark mode voorkeur bij startup
+function loadDarkModePreference() {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    const darkModeBtn = document.getElementById('darkmodeBtn');
+    
+    console.log('Loading dark mode preference:', savedDarkMode); // Debug log
+    
+    if (savedDarkMode === 'true') {
+        document.body.classList.add('dark');
+        if (darkModeBtn) {
+            darkModeBtn.innerHTML = '<i class="fas fa-sun"></i><span class="btn-text">Light</span>';
+        }
+    } else {
+        document.body.classList.remove('dark');
+        if (darkModeBtn) {
             darkModeBtn.innerHTML = '<i class="fas fa-moon"></i><span class="btn-text">Dark</span>';
         }
     }
+}
 
-    document.addEventListener('DOMContentLoaded', function() {
+// Wacht tot DOM volledig geladen is
+document.addEventListener('DOMContentLoaded', function() {
+    // Laad dark mode voorkeur EERST
+    loadDarkModePreference();
+    
     const fadeElements = document.querySelectorAll('.fade-on-scroll');
 
     // Share button event
-        const shareButton = document.getElementById('shareBtn');
-        if(shareButton) {
-            shareButton.addEventListener('click', handleShare);
-        }
+    const shareButton = document.getElementById('shareBtn');
+    if(shareButton) {
+        shareButton.addEventListener('click', handleShare);
+    }
     
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target); // Stop met observeren na animatie
+                observer.unobserve(entry.target);
             }
         });
     }, {
-        threshold: 0.1, // Element is zichtbaar voor 10%
-        rootMargin: '50px' // Laad iets eerder in
+        threshold: 0.1,
+        rootMargin: '50px'
     });
     
     fadeElements.forEach(element => {
         observer.observe(element);
     });
 });
-
-    // Laad dark mode voorkeur
-    loadDarkModePreference();

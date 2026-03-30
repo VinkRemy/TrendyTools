@@ -46,6 +46,13 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
+        body.dark .page-title h1 {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .trending-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -155,6 +162,13 @@
             font-weight: 800;
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: linear-gradient(135deg, #1a4b6e, #3182ae);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.dark .why-header h2 {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -299,3 +313,120 @@
             gap: 1.8rem;
             margin: 2rem 0 3rem;
         }
+
+        /* Responsive fix voor mobiel - voorkomt uitlopen */
+@media (max-width: 768px) {
+    /* Algemene container padding */
+    .wrapper {
+        padding-left: 16px;
+        padding-right: 16px;
+        overflow-x: hidden;
+    }
+    
+    /* Trending grid - 2 kolommen op mobiel */
+    .trending-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    /* All tools grid - FORCEREN 2 kolommen op mobiel */
+    .all-tools-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem;
+    }
+    
+    /* Features grid wordt stacked op mobiel */
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Tool cards aanpassen voor mobiel */
+    .tool-card {
+        padding: 1.2rem 0.8rem 1rem;
+        aspect-ratio: auto;
+        min-height: 180px;
+    }
+    
+    .card-image {
+        width: 64px;
+        height: 64px;
+        font-size: 2rem;
+        border-radius: 24px;
+    }
+    
+    .tool-card h3 {
+        font-size: 1rem;
+    }
+    
+    .tool-card p {
+        font-size: 0.75rem;
+    }
+    
+    /* Search box aanpassen */
+    .all-tools-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    /* Why choose us section */
+    .why-choose-us {
+        padding: 2rem 1rem;
+        margin: 2rem 0;
+    }
+    
+    .why-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .why-header p {
+        font-size: 0.95rem;
+    }
+    
+    .section-label h2 {
+        font-size: 1.6rem;
+    }
+    
+    .section-label i {
+        font-size: 1.5rem;
+        padding: 0.4rem;
+    }
+}
+
+/* Voor extra kleine schermen (onder 400px) */
+@media (max-width: 480px) {
+    .trending-grid {
+        gap: 0.8rem;
+    }
+    
+    .all-tools-grid {
+        gap: 0.8rem;
+    }
+    
+    .tool-card {
+        padding: 1rem 0.5rem 0.8rem;
+    }
+    
+    .card-image {
+        width: 56px;
+        height: 56px;
+        font-size: 1.6rem;
+        border-radius: 20px;
+        margin-bottom: 0.8rem;
+    }
+    
+    .tool-card h3 {
+        font-size: 0.9rem;
+    }
+    
+    .trend-badge {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.8rem;
+    }
+}
