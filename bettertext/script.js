@@ -245,6 +245,72 @@ function initBetterText() {
         const lines = text.split(/\n/).length;
         statsSpan.innerHTML = `Characters: ${chars} (no spaces: ${charsNoSpaces}) | Words: ${words} | Lines: ${lines}`;
     }
+
+        // ==================== PLATFORM LIMITS CHECKER ====================
+    function updatePlatformLimits() {
+        const currentText = textField.value;
+        const textLength = currentText.length;
+        
+        const platformItems = document.querySelectorAll('.platform-item');
+        platformItems.forEach(item => {
+            const limit = parseInt(item.dataset.limit);
+            const counterSpan = item.querySelector('.counter');
+            const statusIcon = item.querySelector('.status-icon');
+            
+            if (limit && !isNaN(limit)) {
+                const isValid = textLength <= limit;
+                const percentage = Math.min(100, (textLength / limit) * 100);
+                
+                // Update counter display
+                if (counterSpan) {
+                    counterSpan.textContent = `${textLength}/${limit.toLocaleString()}`;
+                }
+                
+                // Update status icon and styling
+                if (statusIcon) {
+                    if (isValid) {
+                        statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                        item.classList.remove('invalid');
+                        item.classList.add('valid');
+                    } else {
+                        statusIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                        item.classList.remove('valid');
+                        item.classList.add('invalid');
+                    }
+                }
+                
+                // Add visual warning when close to limit (90%+)
+                if (percentage >= 90 && !isValid) {
+                    item.style.borderColor = '#ef4444';
+                    item.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                } else if (percentage >= 90) {
+                    item.style.borderColor = '#f59e0b';
+                    item.style.backgroundColor = 'rgba(245, 158, 11, 0.1)';
+                } else {
+                    item.style.borderColor = '';
+                    item.style.backgroundColor = '';
+                }
+            }
+        });
+    }
+    
+    // Call updatePlatformLimits whenever text changes
+    const originalUpdateStats = updateStats;
+    updateStats = function() {
+        originalUpdateStats();
+        updatePlatformLimits();
+    };
+    
+    // Initial call
+    updatePlatformLimits();
+    
+    // Collapsible functionality for platform limits
+    const platformLimitsHeader = document.getElementById('platformLimitsHeader');
+    if (platformLimitsHeader) {
+        platformLimitsHeader.addEventListener('click', () => {
+            platformLimitsHeader.classList.toggle('collapsed');
+        });
+    }
     
     // ==================== TRANSFORMATIONS ====================
     function toggleCase(text) { return text.split('').map(c => { if (c >= 'a' && c <= 'z') return c.toUpperCase(); if (c >= 'A' && c <= 'Z') return c.toLowerCase(); return c; }).join(''); }

@@ -98,6 +98,230 @@
 
         <!-- Statistics -->
         <div class="stats-bar" id="stats">Characters: 0 | Words: 0 | Lines: 0</div>
+
+        <!-- Platform Limits Checker -->
+        <div class="platform-limits" id="platformLimits">
+            <div class="platform-limits-header collapsed" id="platformLimitsHeader">
+                <h3><i class="fas fa-chart-line"></i> Platform Limits Checker</h3>
+                <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="platform-limits-content" id="platformLimitsContent">
+                <!-- YouTube -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="100" data-type="youtube-title">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Title:</span>
+                            <span class="platform-limit">100 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="5000" data-type="youtube-desc">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Description:</span>
+                            <span class="platform-limit">5,000 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TikTok -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-tiktok"></i> TikTok</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="2200" data-type="tiktok-caption">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Caption:</span>
+                            <span class="platform-limit">2,200 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Twitch -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-twitch" style="color: #9146ff;"></i> Twitch</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="140" data-type="twitch-title">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Stream title:</span>
+                            <span class="platform-limit">140 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="500" data-type="twitch-panel">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">About panel:</span>
+                            <span class="platform-limit">~300-500 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discord -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-discord" style="color: #5865f2;"></i> Discord</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="2000" data-type="discord-msg">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Message:</span>
+                            <span class="platform-limit">2,000 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="100" data-type="discord-server">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Server desc:</span>
+                            <span class="platform-limit">100 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="1024" data-type="discord-channel">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Channel desc:</span>
+                            <span class="platform-limit">1,024 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="190" data-type="discord-bio">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Profile bio:</span>
+                            <span class="platform-limit">190 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WhatsApp -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-whatsapp" style="color: #25d366;"></i> WhatsApp</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="700" data-type="whatsapp-status">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Status:</span>
+                            <span class="platform-limit">700 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="512" data-type="whatsapp-group">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Group desc:</span>
+                            <span class="platform-limit">512 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Telegram -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-telegram" style="color: #26a5e4;"></i> Telegram</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="70" data-type="telegram-bio">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Bio:</span>
+                            <span class="platform-limit">70 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="255" data-type="telegram-desc">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Channel/group desc:</span>
+                            <span class="platform-limit">255 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instagram -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-instagram" style="color: #e4405f;"></i> Instagram</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="150" data-type="ig-bio">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Bio:</span>
+                            <span class="platform-limit">150 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="2200" data-type="ig-caption">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Caption:</span>
+                            <span class="platform-limit">2,200 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- X (Twitter) -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-twitter"></i> X (Twitter)</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="280" data-type="x-tweet">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Tweet:</span>
+                            <span class="platform-limit">280 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="160" data-type="x-bio">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Bio:</span>
+                            <span class="platform-limit">160 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Facebook -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-facebook" style="color: #1877f2;"></i> Facebook</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="63206" data-type="fb-post">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Post:</span>
+                            <span class="platform-limit">~63,206 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="255" data-type="fb-page">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Page desc:</span>
+                            <span class="platform-limit">255 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LinkedIn -->
+                <div class="platform-category">
+                    <h4><i class="fab fa-linkedin" style="color: #0077b5;"></i> LinkedIn</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="3000" data-type="li-post">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Post:</span>
+                            <span class="platform-limit">3,000 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="2600" data-type="li-about">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">About:</span>
+                            <span class="platform-limit">2,600 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gaming -->
+                <div class="platform-category">
+                    <h4><i class="fas fa-gamepad"></i> Gaming</h4>
+                    <div class="platform-grid">
+                        <div class="platform-item" data-limit="1000" data-type="steam-bio">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Steam bio:</span>
+                            <span class="platform-limit">1,000 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                        <div class="platform-item" data-limit="1000" data-type="roblox-bio">
+                            <span class="status-icon"></span>
+                            <span class="platform-name">Roblox bio:</span>
+                            <span class="platform-limit">1,000 chars</span>
+                            <span class="counter"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div id="footer-placeholder"></div>
 

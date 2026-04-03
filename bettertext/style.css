@@ -3,8 +3,8 @@
         /* ========== DARK MODE VARIABLES ========== */
         :root {
             --btn-border: #cbdde9;
-            --btn-primary-bg: #1e6f9f;
-            --btn-primary-hover: #0f5a85;
+            --btn-primary-bg: #1e2b39;
+            --btn-primary-hover: #1e2b39;
             --btn-secondary-bg: #f1f5f9;
             --btn-secondary-hover: #e2e8f0;
             --history-bg: #f9f9f9;
@@ -124,12 +124,11 @@
             gap: 0.5rem;
         }
 
-        .btn-edit {
+        .btn-edit-old {
             padding: 0.5rem 1rem;
             border-radius: 2rem;
-            border: 1px solid var(--btn-border);
             background: var(--btn-primary-bg);
-            color: var(--text-primary);
+            color: white;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             font-size: 0.85rem;
@@ -139,6 +138,26 @@
             align-items: center;
             gap: 0.5rem;
         }
+
+        .btn-edit {
+     flex: 1 0 auto;
+     background: #1e2b39;
+     color: white;
+     border: none;
+     padding: 1rem 2rem;
+     border-radius: 48px;
+     font-weight: 600;
+     font-size: 1rem;
+     letter-spacing: 0.3px;
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     gap: 0.6rem;
+     transition: 0.2s;
+     box-shadow: 0 10px 18px -8px #1e2b3970;
+     border: 1px solid #ffffff30;
+}
 
         .btn i {
             font-size: 0.9rem;
@@ -269,6 +288,135 @@
             color: var(--text-secondary);
             text-align: center;
         }
+
+        /* Platform Limits Section */
+.platform-limits {
+    margin-top: 1.5rem;
+    background: var(--history-bg);
+    border-radius: 1rem;
+    border: 1px solid var(--history-border);
+}
+
+.platform-limits-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+    background: var(--history-bg);
+    border-radius: 1rem;
+}
+
+.platform-limits-header:hover {
+    background: var(--history-hover);
+}
+
+.platform-limits-header h3 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.platform-limits-header h3 i {
+    margin-right: 0.5rem;
+}
+
+.platform-limits-header .toggle-icon {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    transition: transform 0.3s;
+}
+
+.platform-limits-header.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+/* Gewoon content, geen gezeur met max-height of scroll */
+.platform-limits-content {
+    padding: 1rem;
+    border-top: 1px solid var(--history-border);
+    display: block;
+}
+
+/* Als ie dicht is, verstop de content */
+.platform-limits-header.collapsed + .platform-limits-content {
+    display: none;
+}
+
+.platform-category {
+    margin-bottom: 1rem;
+}
+
+.platform-category h4 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0 0 0.5rem 0;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--history-border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.platform-category h4 i {
+    width: 1.2rem;
+}
+
+.platform-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.platform-item {
+    background: var(--btn-secondary-bg);
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid var(--btn-border);
+    font-family: 'Inter', monospace;
+}
+
+.platform-item .platform-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.platform-item .platform-limit {
+    color: var(--text-secondary);
+}
+
+.platform-item .status-icon {
+    font-size: 0.7rem;
+    width: 1rem;
+    text-align: center;
+}
+
+.platform-item.valid .status-icon {
+    color: #10b981;
+}
+
+.platform-item.invalid .status-icon {
+    color: #ef4444;
+}
+
+.platform-item .counter {
+    font-family: monospace;
+    font-weight: 500;
+    background: var(--history-bg);
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.25rem;
+    margin-left: 0.2rem;
+}
 
         
 
