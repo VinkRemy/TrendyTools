@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ToolGallery · Discover tools | TrendyTools.net</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sim-header">
+            <div class="logo-area">
+                <i class="fas fa-layer-group logo-icon"></i>
+                <span class="logo-text">TrendyTools</span>
+            </div>
+            <button id="darkModeToggle" class="theme-toggle"><i class="fas fa-moon"></i> Dark mode</button>
+        </div>
+
+        <div class="page-title">
+            <h1><i class="fas fa-grip"></i> ToolGallery</h1>
+            <p>Discover powerful tools — 2 rows of 6 initially, load more rows up to 24 tools per page</p>
+        </div>
+
+        <div class="search-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by name or category..." autocomplete="off">
+            </div>
+            <div class="category-filter">
+                <i class="fas fa-filter"></i>
+                <select id="categorySelect">
+                    <option value="all">All categories</option>
+                    <option value="developer">💻 Developer</option>
+                    <option value="creativity">🎨 Creativity</option>
+                    <option value="productivity">⚡ Productivity</option>
+                    <option value="utility">🛠️ Utility</option>
+                    <option value="media">📸 Media</option>
+                </select>
+            </div>
+            <button id="resetFiltersBtn" class="reset-btn"><i class="fas fa-undo-alt"></i> Reset</button>
+        </div>
+
+        <div class="results-info" id="resultsInfo">— tools available</div>
+
+        <div id="toolsGrid" class="tools-grid"></div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-binoculars"></i>
+            <h3>No tools match</h3>
+            <p>Try another keyword or clear filters ✨</p>
+        </div>
+
+        <!-- View More Button (only appears once, adds 2 rows = 12 tools) -->
+        <div class="view-more-container" id="viewMoreContainer">
+            <button id="viewMoreBtn" class="view-more-btn"><i class="fas fa-plus-circle"></i> View more (+2 rows / 12 tools)</button>
+        </div>
+        
+        <!-- Pagination for pages 2, 3, etc. (only when total tools > 24) -->
+        <div class="pagination-container" id="paginationContainer" style="display: none;">
+            <div class="pagination">
+                <button id="prevPageBtn" class="page-btn" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+                <div id="pageNumbers" class="page-numbers"></div>
+                <button id="nextPageBtn" class="page-btn">Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-sim">
+        <i class="fas fa-shield-alt"></i> 100% local · no tracking · max 24 tools per page · pagination for more
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

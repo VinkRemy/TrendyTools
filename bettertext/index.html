@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>BetterText - Smart Text Editor with History Tree</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/theme/theme.css">
+    <script src="/theme/theme.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="/theme/header.html" as="fetch">
+    <link rel="preload" href="/theme/footer.html" as="fetch">
+    <link rel="icon" type="image/png" href="/theme/favicon.png">
+</head>
+<body>
+    <div class="wrapper">
+        <header id="header-placeholder"></header>
+
+        <div class="page-title">
+            <h1>BetterText</h1>
+            <p>Replace letters, change case, remove spaces, and more. Every action is tracked with operation name.</p>
+        </div>
+
+        <!-- Textarea -->
+        <div class="textarea-container">
+            <textarea id="textField" rows="8" placeholder="Enter your text here..."></textarea>
+            <!-- History Panel -->
+        <div class="history-panel">
+            <div class="history-header">
+                <strong><i class="fas fa-tree"></i> History Tree (click to navigate)</strong>
+                <button id="clearHistoryBtn" class="btn" style="padding: 0.2rem 0.6rem; font-size: 0.7rem;"><i class="fas fa-trash"></i> Clear</button>
+            </div>
+            <div id="historyList"></div>
+        </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="btn-group">
+            <button id="undoBtn" class="btn-edit"><i class="fas fa-undo-alt"></i> <span>Undo</span></button>
+            <button id="redoBtn" class="btn-edit"><i class="fas fa-redo-alt"></i> <span>Redo</span></button>
+            <button id="copyBtn" class="btn-edit"><i class="fas fa-copy"></i> <span>Copy</span></button>
+            <button id="exportBtn" class="btn-edit"><i class="fas fa-download"></i> <span>Export</span></button>
+            <button id="resetBtn" class="btn-edit"><i class="fas fa-trash-alt"></i> <span>Clear</span></button>
+        </div>
+
+        <!-- Find & Replace -->
+        <div class="section-title"><i class="fas fa-exchange-alt"></i> Replace</div>
+        <div class="btn-group">
+            <div class="input-group">
+                <input type="text" id="searchFor" placeholder="Find..." size="12">
+                <span>→</span>
+                <input type="text" id="replaceWith" placeholder="Replace with..." size="12">
+                <button id="replaceAllBtn" class="btn">Replace All</button>
+                <button id="replaceFirstBtn" class="btn">First</button>
+                <button id="replaceLastBtn" class="btn">Last</button>
+                <input type="number" id="replaceNth" placeholder="Nth" class="small-input" min="1" value="1">
+                <button id="replaceNthBtn" class="btn">Nth</button>
+            </div>
+        </div>
+
+        <!-- Case transformations -->
+        <div class="section-title"><i class="fas fa-font"></i> Case Transformations</div>
+        <div class="btn-group">
+            <button id="uppercaseBtn" class="btn"><i class="fas fa-arrow-up"></i> UPPERCASE</button>
+            <button id="lowercaseBtn" class="btn"><i class="fas fa-arrow-down"></i> lowercase</button>
+            <button id="toggleCaseBtn" class="btn"><i class="fas fa-random"></i> tOGGLE cASE</button>
+            <button id="capitalizeBtn" class="btn">Capitalize after . ! ?</button>
+            <button id="titlecaseBtn" class="btn">Title Case</button>
+            <button id="fixSentenceCaseBtn" class="btn">Fix Wrong Capitals</button>
+        </div>
+
+        <!-- Spaces & whitespace -->
+        <div class="section-title"><i class="fas fa-space-shuttle"></i> Spaces & Whitespace</div>
+        <div class="btn-group">
+            <button id="removeDoubleSpacesBtn" class="btn">Remove double spaces</button>
+            <button id="trimSpacesBtn" class="btn">Trim spaces</button>
+            <button id="spacesToUnderscoreBtn" class="btn">Spaces → _</button>
+            <button id="removeAllSpacesBtn" class="btn">Remove all spaces</button>
+            <button id="removeEmptyLinesBtn" class="btn">Remove double line breaks</button>
+            <button id="removeAllEmptyLinesBtn" class="btn">Remove ALL empty lines</button>
+        </div>
+
+        <!-- Additions category - 3 aparte knoppen -->
+        <div class="section-title"><i class="fas fa-plus-circle"></i> Additions</div>
+        <div class="btn-group">
+            <button id="addPeriodBtn" class="btn"><i class="fas fa-stop"></i> Add . at end</button>
+            <button id="addExclamationBtn" class="btn"><i class="fas fa-exclamation"></i> Add ! at end</button>
+            <button id="addQuestionBtn" class="btn"><i class="fas fa-question"></i> Add ? at end</button>
+        </div>
+
+        <!-- Extra transformations -->
+        <div class="section-title"><i class="fas fa-cogs"></i> Extra Transformations</div>
+        <div class="btn-group">
+            <button id="reverseBtn" class="btn"><i class="fas fa-sync-alt"></i> Reverse text</button>
+            <button id="removePunctuationBtn" class="btn">Remove punctuation</button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-bar" id="stats">Characters: 0 | Words: 0 | Lines: 0</div>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
